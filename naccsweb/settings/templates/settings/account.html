@@ -8,5 +8,15 @@
     };
     FACEIT.init(initParams);
 </script>
-<a href="#" class="button Faceit" onclick="FACEIT.loginWithFaceit()">Connect with Faceit</a>
+{% if user.profile.faceit != "" %}
+<p>Faceit: {{ user.profile.faceit }}</p>
+<a href="#" class="button Faceit" onclick="FACEIT.loginWithFaceit()">Refresh Faceit</a>
+{% else %}
+<a href="#" class="button Faceit" onclick="FACEIT.loginWithFaceit()">Login With Faceit</a>
+{% endif %}
+{% if user.profile.discord != "" %}
+<p>Discord: {{ user.profile.discord }}</p>
+<a href='https://discordapp.com/api/oauth2/authorize?client_id=610627028479246338&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsettings%2Faccount%2Fdiscordcallback&response_type=code&scope=identify'>Refresh Discord</a>
+{% else %}
 <a href='https://discordapp.com/api/oauth2/authorize?client_id=610627028479246338&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsettings%2Faccount%2Fdiscordcallback&response_type=code&scope=identify'>Login with Discord</a>
+{% endif %}
