@@ -27,6 +27,12 @@ def account(request):
     schools = get_schools()
 
     if request.method == 'POST':
+        # Check if resend was hit
+        if ('resend' in request.POST):
+            user = User.objects.get(username=request.user.username)
+            email_college_confirmation(user.profile.college_email, request)
+            return redirect('pending')
+            
         form = CollegeForm(request.POST, schools=schools)
 
         if form.is_valid():
@@ -48,6 +54,7 @@ def account(request):
 
 @login_required
 def pending(request):
+    print (request.user.profile.verified_student)
     if request.user.profile.verified_student:
         return redirect('/')
     return render(request, 'verification/verification_pending.html') 
