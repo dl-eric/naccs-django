@@ -1,13 +1,43 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <title>{% block title %}Base Title{% endblock %}</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/naccs.css' %}">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400&display=swap" rel="stylesheet">
 </head>
 <body>
   <main>
-    {% block content %}
-    {% endblock %}
+    <nav>
+      <section class="content">
+        <a id="logo" href="/"><img src="{% static 'assets/headerlogo_small.png' %}" height="100px"></a>
+
+        <section class="tabs">
+          {% if not user.is_authenticated %}
+          <a href='/login'>LOGIN</a>
+          <a id="signup" class="ghost_button" href='/register'>SIGN UP</a>
+          {% else %}
+          <section class="upup">HELLO {{user.username}}!</section>
+          <a href='/settings/account'>SETTINGS</a>
+          <a href='/logout'>LOGOUT</a>
+          {% endif %}
+        </section>
+      </section>
+    </nav>
+
+    <section class="jumbotron">
+        <div class="underlay"></div>
+        <div class="underlay tint"></div>
+        <h1>
+          NORTH AMERICAN COLLEGIATE COUNTERSTRIKE
+        </h1>
+    </section>
+
+    <!-- <section class="content"> -->
+      {% block content %}
+      {% endblock %}
+    <!-- </section> -->
   </main>
 </body>
 </html>

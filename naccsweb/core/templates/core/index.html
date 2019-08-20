@@ -3,12 +3,38 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
-  <p><a href="{% url 'password_reset' %}">reset password</a></p>
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
-{% endif %}
+<div class="content">
+  <section id="queues">
+    <article class="panel">
+      <h1 class="title">COLLEGIATE HUB</h1>
+      <div class="underline"></div>
+      <div class="body">
+        <div class="body_content">
+          come queue with me boio boi boi naccas nacss nacass ncass naccs
+        </div>
+
+        <div class="footer"><a class="ghost_button panel_button">VISIT</a></div>
+      </div>
+    </article>
+    <article class="panel">
+      <h1 class="title">POWER PUGS</h1>
+      <div class="underline"></div>
+      <div class="body">
+        <div class="body_content">
+          BETTER QUEUE!
+        </div>
+        <div class="footer">
+          <a class="ghost_button panel_button">VISIT</a>
+        </div>
+      </div>
+    </article>
+  </section>
+</div>
+<section id="partners">
+  <div class="content">
+    <h1>Partners</h1>
+    <section>FACEIT</section>
+  </div>
+</section>
+
 {% endblock %}

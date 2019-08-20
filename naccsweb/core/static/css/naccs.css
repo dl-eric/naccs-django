@@ -1,0 +1,234 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+}
+
+.content {
+    margin: 0 auto;
+    width: 80%;
+    max-width: 1200px;
+}
+
+nav {
+    background-color: #0C2132;
+    padding: 20px 0;
+    position: relative;
+    margin-top: 25px;
+    color: white;
+    margin-bottom: 30px;
+}
+
+nav #logo {
+    position: absolute;
+    border-radius: 10px;
+    box-shadow: 0px 0px 12px #333;
+}
+nav #logo img {
+    /* Get rid of leading text due to inline */
+    display: block; 
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+}
+
+nav .tabs {
+    margin-right: 0;
+    margin-left: auto;
+    letter-spacing: 2px;
+    font-size: 12px;
+}
+
+nav .tabs a:hover {
+    color: #F65A44;
+}
+
+nav .tabs a {
+    margin-left: 5px;
+    padding: 10px;
+    transition: color 0.1s ease-in;
+}
+
+nav > .content {
+    display: flex;
+    align-items: center;
+    height: 35px;
+}
+
+.ghost_button, #signup {
+    border-style: solid;
+    border-width: 2px;
+    border: 2px solid #F65A44;
+    color: #F65A44;
+    transition: color 0.2s ease-in;
+    transition: background-color 0.2s ease-in;
+}
+
+.ghost_button:hover, #signup:hover {
+    color: white;
+    background-color: #F65A44;
+}
+
+.upup {
+    position:absolute;
+    color: black;
+    top: -20px;
+    margin-left: 15px;
+}
+
+.jumbotron {
+    /* position: absolute;
+    top: 80px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1; */
+    height: 300px;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+.jumbotron > h1 {
+    margin-top: -30px;
+    font-size: 40px;
+    letter-spacing: 8px;
+    font-weight: lighter;
+    animation-name: fadein;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+}
+
+.jumbotron > .underlay {
+    height: 600px;
+    opacity: 0.6;
+    position: absolute;
+    top: -170px;
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    background-image: url('/static/assets/overlay_image.jpg');
+    background-size: cover;
+    z-index: -2;
+}
+
+.jumbotron > .tint {
+    background-image: linear-gradient(to right, 
+    rgba(12, 49, 50, 1.0),
+    /* rgba(12, 49, 50, 0.5) 50%, */
+    rgba(246, 90, 68, 1.0) 100%);
+    /* transform: skew(-30deg); */
+    /* left: -200px;
+    right: -350px; */
+}
+
+.jumbotron h2 {
+    font-size: 1.8em;
+}
+
+.jumbotron > .overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-color: rgba(100, 10, 10, 0.6);
+    z-index: -2;
+    color: white;
+}
+
+#queues {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#partners {
+    background-color: #eee;
+    height: 200px;
+}
+
+#accounts {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#accounts > .item {
+    
+}
+
+.panel {
+    animation-name: floatup;
+    animation-duration: 0.75s;
+    animation-iteration-count: 1;
+}
+
+.panel .body {
+    background-color: #0C2132;
+    width: 300px;
+    padding: 5px;
+    border: 2px solid #0C2132;
+    color: white;
+}
+
+.panel .underline {
+    height: 10px;
+    width: 200px;
+    background-color: #F65A44;
+    transform: skew(-30deg);
+    margin-bottom: 10px;
+}
+
+.panel .title {
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+    color: #0C2132;
+    font-weight: normal;
+}
+
+.panel .body_content {
+    height: 200px;
+    margin: 10px;
+    font-size: 12px;
+}
+
+.panel_button {
+    cursor: pointer;
+    display: block;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+}
+
+.panel .footer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+@keyframes floatup {
+    0%   {
+        transform: translateY(50px);
+        opacity: 0
+    }
+    100%   {
+        transform: translateY(0px);
+        opacity: 1
+    }
+  }
+
+@keyframes fadein {
+    0% {
+        opacity: 0
+    }
+    100% {
+        opacity: 1
+    }
+}

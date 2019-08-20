@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template.loader import render_to_string
