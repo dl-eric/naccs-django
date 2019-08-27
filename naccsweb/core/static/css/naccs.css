@@ -3,7 +3,7 @@ body {
     margin: 0;
 }
 
-input, select {
+input, select, textarea {
     font-family: 'Open Sans', sans-serif;
     border: 1px solid #0C2132;
     border-radius: 2px;
@@ -287,6 +287,35 @@ form .ghost_button {
     padding: 4px 8px 4px 8px;
     list-style-type: none;
     max-width: 500px;
+}
+
+.not_college_button {
+    cursor: pointer;
+    color: #F65A44;
+    letter-spacing: 2px;
+    font-size: 12px;
+    margin-left: 50px;
+}
+
+.selector {
+    margin: 40px 0 40px 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.selector .option {
+    font-size: 16px;
+    margin: 0 20px 0 20px;
+    padding: 20px;
+    letter-spacing: 1.5px;
+    width: 300px;
+    text-align: center;
+}
+
+textarea {
+    resize: none;
 }
 
 @keyframes floatup {

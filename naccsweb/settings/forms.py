@@ -1,6 +1,8 @@
 from django import forms
-from .schools import get_schools
 from django.core.exceptions import ValidationError
+
+from .models import GraduateFormModel, HighSchoolFormModel
+from .schools import get_schools
 
 class CollegeForm(forms.Form):
     def __init__(self,*args,**kwargs):
@@ -29,3 +31,30 @@ class CollegeForm(forms.Form):
 
     college = forms.CharField(label="College Name")
     email   = forms.EmailField(label="College Email")
+
+class GraduateForm(forms.ModelForm):
+    class Meta:
+        model = GraduateFormModel
+        fields = ('college', 'grad_date', 'proof', 'other')
+        exclude = ['user']
+
+    college    = forms.CharField(label="College")
+    grad_date  = forms.DateField(label="Graduation Date", help_text="MM/DD/YY")
+    proof      = forms.FileField(label="Proof, such as transcript or diploma")
+    other      = forms.CharField(label="Other Information", help_text="Optional", widget=forms.Textarea(attrs={'rows': 5}), required=False)
+
+class HighSchoolForm(forms.ModelForm):
+    class Meta:
+        model = HighSchoolFormModel
+        fields = ('highschool', 'college', 'grad_date', 'proof', 'other')
+        exclude = ['user']
+
+    highschool = forms.CharField(label="Current Highschool")
+    grad_date  = forms.DateField(label="Graduation Date", help_text="MM/DD/YY")
+    college    = forms.CharField(label="Future College")
+    proof      = forms.FileField(label="Acceptance Letter")
+    other      = forms.CharField(label="Other Information", help_text="Optional", widget=forms.Textarea(attrs={'rows': 5, 'cols': 40}), required=False)
+
+class MilitaryForm(forms.Form):
+    # TODO
+    pass

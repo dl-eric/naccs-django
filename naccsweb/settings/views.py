@@ -6,8 +6,9 @@ from django.utils.http import urlsafe_base64_decode
 
 from .oauth import get_discord_name, get_faceit_name
 from .schools import get_schools
-from .forms import CollegeForm
+from .forms import CollegeForm, GraduateForm, HighSchoolForm
 from .email import email_college_confirmation, check_token
+from .models import GraduateFormModel, HighSchoolFormModel
 
 def verify(request, uidb64, token):
     try:
@@ -92,3 +93,45 @@ def discord(request):
     user.profile.discord = discord_name
     user.save()
     return redirect('account')
+
+@login_required
+def application(request):
+    return render(request, 'settings/base_application.html')
+
+@login_required
+def grad_application(request):
+    if GraduateFormModel.objects.filter(user=request.user).exists():
+        return redirect('account')
+
+    if request.method == "POST":
+        form = GraduateForm(request.POST, request.FILES)
+        if form.is_valid():
+            answers = form.save(commit=False)
+            answers.user = User.objects.get(username=request.user.username)
+            answers.save()
+            return redirect('account')
+        else:
+            return render(request, 'settings/application.html', {'form': form, 'type': "GRADUATED STUDENT"})
+            
+    form = GraduateForm()
+    
+    return render(request, 'settings/application.html', {'form': form, 'type': "GRADUATED STUDENT"})
+
+@login_required
+def highschool_application(request):
+    if HighSchoolFormModel.objects.filter(user=request.user).exists():
+        return redirect('account')
+
+    if request.method == "POST":
+        form = HighSchoolForm(request.POST, request.FILES)
+        if form.is_valid():
+            answers = form.save(commit=False)
+            answers.user = User.objects.get(user=request.user)
+            answers.save()
+            return redirect('account')
+        else:
+            return render(request, 'settings/application.html', {'form': form, 'type': "HIGH SCHOOL STUDENT"})
+
+    form = HighSchoolForm()
+
+    return render(request, 'settings/application.html', {'form': form, 'type': "HIGH SCHOOL STUDENT"})

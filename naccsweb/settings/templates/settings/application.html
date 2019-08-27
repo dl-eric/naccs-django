@@ -1,0 +1,15 @@
+{% extends 'settings/base_application.html' %}
+
+{% block title %}Application{% endblock %}
+
+{% block jumbo_title %}{{ type }} APPLICATION{% endblock %}
+
+{% block application %}
+<section class="panel">
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="ghost_button" type="submit" value="Submit">
+    </form>
+</section>
+{% endblock %}

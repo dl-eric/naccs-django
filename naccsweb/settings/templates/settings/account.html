@@ -31,6 +31,7 @@
                         {% csrf_token %}
                         {{ form.as_p }}
                         <input class="ghost_button" type="submit" name="college_info" value="Save">
+                        <a class="not_college_button" href="account/application">Not a current student?</a>
                     </form>
                     {% endif %}
                 </section>

@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Application{% endblock %}
+
+{% block jumbo_title %}{{ type }} APPLICATION{% endblock %}
+
+{% block content %}
+<div class="content">
+    <section class="panel">
+        <h1 class="title">Not a current college student?</h1>
+        <div class="underline"></div>
+        <p>That's fine! We accept players who are entering college, or have graduated from college.</p>
+        <p>Select one of the options below that best suit your situation to a form that we will review.</p>
+        {% block selector %}
+        <div class="selector">
+            <a class="option ghost_button" href="/settings/account/application/highschool">I'm in High School</a>
+            <a class="option ghost_button" href="/settings/account/application/graduate">I've already graduated</a>
+        </div>
+        {% endblock %}
+        {% block application %}
+        
+        {% endblock %}
+    </section>
+</div>
+
+{% endblock %}
