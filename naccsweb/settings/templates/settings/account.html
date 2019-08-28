@@ -9,54 +9,63 @@
     <section id="account_settings">
         <section id="main">
             <section class="panel">
-                    <h1 class="title">Personal Info</h1>
-                    <div class="underline"></div>
-                    <p>Email: {{ user.email }}</p>
-                    <p>Bio: {{ user.profile.bio }}</p>
-                </section>
-            
-                <section class="panel">
-                    <h1 class="title">College Info</h1>
-                    <div class="underline"></div>
-                    {% if user.profile.college %}
-                    <p>{{ user.profile.college }}</p>
-                    {{ user.profile.college_email }}
-                    {% if not user.profile.verified_student %}
-                    <i class="fa fa-times-circle"></i> <form action="" method="post">{% csrf_token %}<input class="ghost_button" type="submit" name="resend" value="Resend"></form>
-                    {% else %}
-                    <i class="fa fa-check-circle"></i>
-                    {% endif %}
-                    {% else %}
-                    <form action="" method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <input class="ghost_button" type="submit" name="college_info" value="Save">
-                        <a class="not_college_button" href="account/application">Not a current student?</a>
-                    </form>
-                    {% endif %}
-                </section>
+                <h1 class="title">Personal Info</h1>
+                <div class="underline"></div>
+                <p>Email: {{ user.email }}</p>
+                <form action="" method="post" enctype="multipart/form-data" name="update">
+                    {% csrf_token %}
+                    {{ profileForm.as_p }}
+                    <input class="ghost_button" type="submit" value="Update Profile" name="update">
+                </form>
+            </section>
+
+            <section class="panel">
+                <h1 class="title">College Info</h1>
+                <div class="underline"></div>
+                {% if user.profile.college %}
+                <p>{{ user.profile.college }}</p>
+                {{ user.profile.college_email }}
+                {% if not user.profile.verified_student %}
+                <i class="fa fa-times-circle"></i>
+                <form action="" method="post">{% csrf_token %}<input class="ghost_button" type="submit" name="resend"
+                        value="Resend"></form>
+                {% else %}
+                <i class="fa fa-check-circle"></i>
+                {% endif %}
+                {% else %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input class="ghost_button" type="submit" name="college_info" value="Save" name="email">
+                    <a class="not_college_button" href="account/application">Not a current student?</a>
+                </form>
+                {% endif %}
+            </section>
         </section>
         <section id="sidebar">
-                <section class="panel">
-                    <h1 class="title">FACEIT</h1>
-                    <div class="underline"></div>
-                    {% if user.profile.faceit != "" %}
-                    <p>Username: {{ user.profile.faceit }}</p>
-                    <a href="#" class="button Faceit" onclick="FACEIT.loginWithFaceit()">Refresh</a>
-                    {% else %}
-                    <a href="#" class="button Faceit" onclick="FACEIT.loginWithFaceit()">Login With Faceit</a>
-                    {% endif %}
-                </section>
-                <section class="panel">
-                    <h1 class="title">Discord</h1>
-                    <div class="underline"></div>
-                    {% if user.profile.discord != "" %}
-                    <p>Username: {{ user.profile.discord }}</p>
-                    <a href='https://discordapp.com/api/oauth2/authorize?client_id=610627028479246338&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsettings%2Faccount%2Fdiscordcallback&response_type=code&scope=identify'>Refresh</a>
-                    {% else %}
-                    <a href='https://discordapp.com/api/oauth2/authorize?client_id=610627028479246338&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsettings%2Faccount%2Fdiscordcallback&response_type=code&scope=identify'>Login with Discord</a>
-                    {% endif %}
-                </section>
+            <section class="panel">
+                <h1 class="title">FACEIT</h1>
+                <div class="underline"></div>
+                {% if user.profile.faceit != "" %}
+                <p>Username: {{ user.profile.faceit }}</p>
+                <a href="#" class="button Faceit" onclick="FACEIT.loginWithFaceit()">Refresh</a>
+                {% else %}
+                <a href="#" class="button Faceit" onclick="FACEIT.loginWithFaceit()">Login With Faceit</a>
+                {% endif %}
+            </section>
+            <section class="panel">
+                <h1 class="title">Discord</h1>
+                <div class="underline"></div>
+                {% if user.profile.discord != "" %}
+                <p>Username: {{ user.profile.discord }}</p>
+                <a
+                    href='https://discordapp.com/api/oauth2/authorize?client_id=610627028479246338&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsettings%2Faccount%2Fdiscordcallback&response_type=code&scope=identify'>Refresh</a>
+                {% else %}
+                <a
+                    href='https://discordapp.com/api/oauth2/authorize?client_id=610627028479246338&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsettings%2Faccount%2Fdiscordcallback&response_type=code&scope=identify'>Login
+                    with Discord</a>
+                {% endif %}
+            </section>
         </section>
     </section>
 

@@ -1,7 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
-from .models import GraduateFormModel, HighSchoolFormModel
+from .models import GraduateFormModel, HighSchoolFormModel, EditProfile
 from .schools import get_schools
 
 class CollegeForm(forms.Form):
@@ -54,6 +55,16 @@ class HighSchoolForm(forms.ModelForm):
     college    = forms.CharField(label="Future College")
     proof      = forms.FileField(label="Acceptance Letter")
     other      = forms.CharField(label="Other Information", help_text="Optional", widget=forms.Textarea(attrs={'rows': 5, 'cols': 40}), required=False)
+
+class EditProfileForm(forms.Form):
+    
+    class Meta:
+        model = EditProfile
+        fields = ('first_name', 'last_name', 'bio')
+
+    first_name= forms.CharField(label="First Name" ,required=False)
+    last_name  = forms.CharField(label="Last Name", required=False)
+    bio    =  forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 40}))
 
 class MilitaryForm(forms.Form):
     # TODO

@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
-
+from users.models import Profile
 from .oauth import get_discord_name, get_faceit_name
 from .schools import get_schools
-from .forms import CollegeForm, GraduateForm, HighSchoolForm
+from .forms import CollegeForm, GraduateForm, HighSchoolForm, EditProfileForm
 from .email import email_college_confirmation, check_token
 from .models import GraduateFormModel, HighSchoolFormModel
 
@@ -30,6 +30,9 @@ def account(request):
     except:
         schools = []
 
+    form = CollegeForm(schools=schools)
+    profileForm = EditProfileForm()
+
     if request.method == 'POST':
         # Check if resend was hit
         if ('resend' in request.POST):
@@ -37,24 +40,41 @@ def account(request):
             email_college_confirmation(user.profile.college_email, request)
             return redirect('pending')
             
-        form = CollegeForm(request.POST, schools=schools)
 
-        if form.is_valid():
-            college = form.cleaned_data['college']
-            email = form.cleaned_data['email']
+        if ('email' in request.POST):
+            form = CollegeForm(request.POST, schools=schools)
+            if form.is_valid():
+                college = form.cleaned_data['college']
+                email = form.cleaned_data['email']
 
-            user = User.objects.get(username=request.user.username)
-            user.profile.college_email = email
-            user.profile.college = college
-            user.save()
+                if (Profile.objects.filter(college_email=email)):
+                    print("email exists")
+                    return redirect('account')
+                else:
+                    user = User.objects.get(username=request.user.username)
+                    user.profile.college_email = email
+                    user.profile.college = college
+                    user.save()
 
-            email_college_confirmation(email, request)
-            return redirect('pending')
+                    email_college_confirmation(email, request)
+                    return redirect('pending')
+
+        if ('update' in request.POST):
+            profileForm = EditProfileForm(request.POST, initial={'bio':'asdas'})
+            if profileForm.is_valid():
+                user = User.objects.get(username=request.user.username)
+                user.profile.bio = profileForm['bio'].value()
+                user.first_name = profileForm['first_name'].value()
+                user.last_name = profileForm['last_name'].value()
+                user.save()
+                return redirect('account')
     else:
+        user = User.objects.get(username=request.user.username)
         form = CollegeForm(schools=schools)
+        profileForm = EditProfileForm(initial={'first_name':user.first_name , 'last_name': user.last_name,'bio':user.profile.bio})
     
 
-    return render(request, 'settings/account.html', {'form': form})
+    return render(request, 'settings/account.html', {'form': form, 'profileForm': profileForm })
 
 @login_required
 def pending(request):
