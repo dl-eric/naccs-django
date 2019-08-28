@@ -31,14 +31,3 @@ class HighSchoolFormModel(models.Model):
     proof      = models.FileField(upload_to="highschool/proof/")
     other      = models.TextField(max_length=500, blank=True)
 
-class EditProfile(models.Model):
-    class Meta:
-        verbose_name = "Student Profile"
-        verbose_name_plural = "Student Profiles"
-    
-    def __str__(self):
-        return self.user.profile.nickname
-
-    first_name = models.CharField(max_length=80, blank=True)
-    last_name    = models.CharField(max_length=80, blank=True)
-    bio  = models.TextField(null=True)
