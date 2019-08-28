@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
-from users.models import Profile
+
 from .oauth import get_discord_name, get_faceit_name
 from .schools import get_schools
 from .forms import CollegeForm, GraduateForm, HighSchoolForm, EditProfileForm
