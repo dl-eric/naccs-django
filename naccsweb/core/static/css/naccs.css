@@ -91,7 +91,7 @@ nav > .content {
     text-decoration: none;
 }
 
-.ghost_button:hover, #signup:hover {
+.ghost_button:hover:enabled, #signup:hover:enabled {
     color: white;
     background-color: #F65A44;
 }
@@ -213,10 +213,12 @@ nav > .content {
 
 #account_settings > #main {
     flex-grow: 3;
+    width: 800px;
 }
 
 #account_settings > #sidebar {
     flex-grow: 1;
+    margin-left: auto;
 }
 
 .panel {
@@ -316,6 +318,18 @@ form .ghost_button {
 
 textarea {
     resize: none;
+}
+
+.invite_btn {
+    margin-top: 20px;
+    font-size: 14px;
+    padding: 10px 20px 10px 20px;
+}
+
+.ghost_button:disabled, .ghost_button[disabled] {
+    color: gray;
+    border: 2px solid rgb(97, 97, 97);
+    transition: none;
 }
 
 @keyframes floatup {

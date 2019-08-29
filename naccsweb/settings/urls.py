@@ -10,5 +10,6 @@ urlpatterns = [
     path(r'account/discordcallback', views.discord, name='discord'),
     path(r'account/application', views.application, name="application"),
     path(r'account/application/graduate', views.grad_application, name="grad_application"),
-    path(r'account/application/highschool', views.highschool_application, name="highschool_application")
+    path(r'account/application/highschool', views.highschool_application, name="highschool_application"),
+    path(r'account/generatecollegiate', views.generate_collegiate, name="generate_collegiate")
 ]

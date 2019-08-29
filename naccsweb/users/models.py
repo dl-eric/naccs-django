@@ -14,6 +14,7 @@ class Profile(models.Model):
     grad_date = models.DateField(null=True, blank=True)
     discord = models.CharField(max_length=32, blank=True)
     faceit = models.CharField(max_length=32, blank=True)
+    collegiate_hub_invite = models.CharField(max_length=8, blank=True)
 
 
 @receiver(post_save, sender=User)
