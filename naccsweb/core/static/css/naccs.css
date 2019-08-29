@@ -91,7 +91,7 @@ nav > .content {
     text-decoration: none;
 }
 
-.ghost_button:hover:enabled, #signup:hover:enabled {
+.ghost_button:hover, #signup:hover, .ghost_button:hover:enabled, #signup:hover:enabled {
     color: white;
     background-color: #F65A44;
 }

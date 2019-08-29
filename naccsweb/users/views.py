@@ -80,9 +80,12 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        return redirect('login')
+        return redirect('confirmed')
     else:
         return render(request, 'registration/account_activation_invalid.html')
+
+def confirmed(request):
+    return render(request, 'registration/account_activation_done.html')
 
 def pending(request):
     if request.user.is_active:
