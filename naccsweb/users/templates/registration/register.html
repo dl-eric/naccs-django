@@ -9,11 +9,24 @@
     <section class="panel">    
         <h1 class="title">Sign Up</h1>
         <div class="underline"></div>
-        <form action="" method="post">
+        <form action="" method="post" onsubmit="return checkForm(this);">
             {% csrf_token %}
             {{ form.as_p }}
-            <button class="ghost_button" type="submit">Register</button>
+            <button class="ghost_button" name="myButton" type="submit">Register</button>
         </form>
+        <script type="text/javascript">
+
+  function checkForm(form)
+  {
+    //
+    // validate form fields
+    //
+
+    form.myButton.disabled = true;
+    return true;
+  }
+
+</script>
     </section>
 </section>
 {% endblock %}

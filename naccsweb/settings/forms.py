@@ -39,7 +39,7 @@ class GraduateForm(forms.ModelForm):
         exclude = ['user']
 
     college    = forms.CharField(label="College")
-    grad_date  = forms.DateField(label="Graduation Date", help_text="MM/DD/YY")
+    grad_date       = forms.DateField(input_formats=['%m/%d/%Y'])
     proof      = forms.FileField(label="Proof, such as transcript or diploma")
     other      = forms.CharField(label="Other Information", help_text="Optional", widget=forms.Textarea(attrs={'rows': 5}), required=False)
 
@@ -50,7 +50,7 @@ class HighSchoolForm(forms.ModelForm):
         exclude = ['user']
 
     highschool = forms.CharField(label="Current Highschool")
-    grad_date  = forms.DateField(label="Graduation Date", help_text="MM/DD/YY")
+    grad_date       = forms.DateField(input_formats=['%m/%d/%Y'])
     college    = forms.CharField(label="Future College")
     proof      = forms.FileField(label="Acceptance Letter")
     other      = forms.CharField(label="Other Information", help_text="Optional", widget=forms.Textarea(attrs={'rows': 5, 'cols': 40}), required=False)
