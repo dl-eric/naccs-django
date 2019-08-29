@@ -12,9 +12,13 @@
                 <h1 class="title">Personal Info</h1>
                 <div class="underline"></div>
                 <p>Email: {{ user.email }}</p>
-                <p>Bio: {{ user.profile.bio }}</p>
+                <form action="" method="post" enctype="multipart/form-data" name="update">
+                    {% csrf_token %}
+                    {{ profileForm.as_p }}
+                    <input class="ghost_button" type="submit" value="Update Profile" name="update">
+                </form>
             </section>
-            
+
             <section class="panel">
                 <h1 class="title">College Info</h1>
                 <div class="underline"></div>
@@ -30,12 +34,11 @@
                 <form action="" method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <input class="ghost_button" type="submit" name="college_info" value="Save">
+                    <input class="ghost_button" type="submit" name="college_info" value="Save" name="email">
                     <a class="not_college_button" href="account/application">Not a current student?</a>
                 </form>
                 {% endif %}
             </section>
-
             <section class="panel">
                 <h1 class="title">Collegiate Hub</h1>
                 <div class="underline"></div>

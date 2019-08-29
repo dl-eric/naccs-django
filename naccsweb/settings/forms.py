@@ -1,11 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from users.models import Profile
 
 from .models import GraduateFormModel, HighSchoolFormModel
 from .schools import get_schools
 
+
 class CollegeForm(forms.Form):
-    def __init__(self,*args,**kwargs):
+    def __init__(self, *args, **kwargs):
         self.schools = kwargs.pop('schools')
         schools_tuple = []
         for school in sorted(self.schools):
@@ -22,15 +24,19 @@ class CollegeForm(forms.Form):
         for email in valid_emails:
             if email_suffix.endswith(email):
                 valid = True
+                if (Profile.objects.filter(
+                        college_email=cleaned_data["email"])):
+                    raise ValidationError('College Email Already Used!')
                 break
 
         if not valid:
             raise ValidationError('Invalid College Email')
 
-        return cleaned_data    
+        return cleaned_data
 
     college = forms.CharField(label="College Name")
-    email   = forms.EmailField(label="College Email")
+    email = forms.EmailField(label="College Email")
+
 
 class GraduateForm(forms.ModelForm):
     class Meta:
@@ -38,10 +44,14 @@ class GraduateForm(forms.ModelForm):
         fields = ('college', 'grad_date', 'proof', 'other')
         exclude = ['user']
 
-    college    = forms.CharField(label="College")
-    grad_date  = forms.DateField(label="Graduation Date", help_text="MM/DD/YY")
-    proof      = forms.FileField(label="Proof, such as transcript or diploma")
-    other      = forms.CharField(label="Other Information", help_text="Optional", widget=forms.Textarea(attrs={'rows': 5}), required=False)
+    college = forms.CharField(label="College")
+    grad_date = forms.DateField(label="Graduation Date", help_text="MM/DD/YY")
+    proof = forms.FileField(label="Proof, such as transcript or diploma")
+    other = forms.CharField(label="Other Information",
+                            help_text="Optional",
+                            widget=forms.Textarea(attrs={'rows': 5}),
+                            required=False)
+
 
 class HighSchoolForm(forms.ModelForm):
     class Meta:
@@ -50,10 +60,26 @@ class HighSchoolForm(forms.ModelForm):
         exclude = ['user']
 
     highschool = forms.CharField(label="Current Highschool")
-    grad_date  = forms.DateField(label="Graduation Date", help_text="MM/DD/YY")
-    college    = forms.CharField(label="Future College")
-    proof      = forms.FileField(label="Acceptance Letter")
-    other      = forms.CharField(label="Other Information", help_text="Optional", widget=forms.Textarea(attrs={'rows': 5, 'cols': 40}), required=False)
+    grad_date = forms.DateField(label="Graduation Date", help_text="MM/DD/YY")
+    college = forms.CharField(label="Future College")
+    proof = forms.FileField(label="Acceptance Letter")
+    other = forms.CharField(label="Other Information",
+                            help_text="Optional",
+                            widget=forms.Textarea(attrs={
+                                'rows': 5,
+                                'cols': 40
+                            }),
+                            required=False)
+
+
+class EditProfileForm(forms.Form):
+    class Meta:
+        fields = ('first_name', 'last_name', 'bio')
+
+    first_name = forms.CharField(label="First Name", required=False)
+    last_name = forms.CharField(label="Last Name", required=False)
+    bio = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 40}))
+
 
 class MilitaryForm(forms.Form):
     # TODO

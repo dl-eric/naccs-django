@@ -30,3 +30,4 @@ class HighSchoolFormModel(models.Model):
     grad_date  = models.DateField(null=True, blank=True)
     proof      = models.FileField(upload_to="highschool/proof/")
     other      = models.TextField(max_length=500, blank=True)
+
