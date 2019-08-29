@@ -1,6 +1,7 @@
 import requests
 import os   
 import base64
+import json
 
 DISCORD_ENDPOINT = 'https://discordapp.com/api'
 DISCORD_TOKEN_URL = DISCORD_ENDPOINT + '/oauth2/token'
@@ -9,8 +10,10 @@ DISCORD_CLIENT_SECRET = os.environ.get('DISCORD_CLIENT_SECRET')
 
 FACEIT_TOKEN_ENDPOINT = 'https://api.faceit.com/auth/v1/oauth/token'
 FACEIT_INFO_ENDPOINT = 'https://api.faceit.com/auth/v1/resources/userinfo'
+FACEIT_INVITE_ENDPOINT = 'https://api.faceit.com/invitations/v1/invite'
 FACEIT_CLIENT_ID = os.environ.get('FACEIT_CLIENT_ID')
 FACEIT_CLIENT_SECRET = os.environ.get('FACEIT_CLIENT_SECRET')
+FACEIT_HUB_BOT_TOKEN = os.environ.get('FACEIT_HUB_BOT_TOKEN')
 
 def get_discord_name(code):
     data = {
@@ -56,4 +59,29 @@ def get_faceit_name(faceit_code):
         'Authorization': 'Bearer ' + access_token
     }
     response =  requests.get(FACEIT_INFO_ENDPOINT, headers=headers)
+    print(response.json())
     return response.json().get('nickname')
+
+def get_collegiate_invite():
+    data = {
+        "entity_id":"a67c2ead-9968-4e8b-957b-fb8bc244b302",
+	    "entity_type":"hub",
+	    "type":"regular",
+	    "max_age":0,
+	    "max_uses":1
+    }
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + FACEIT_HUB_BOT_TOKEN
+    }
+
+    response = requests.post(FACEIT_INVITE_ENDPOINT, data=json.dumps(data), headers=headers).json()
+    print("Response", response)
+    if response.get('code') and response.get('code') == 'OPERATION-OK':
+        code = response.get('payload').get('code')
+        return code
+    return None
+
+def get_invite_link(code):
+    return 'https://www.faceit.com/en/inv/' + code

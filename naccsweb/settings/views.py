@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 
-from .oauth import get_discord_name, get_faceit_name
+from .oauth import get_discord_name, get_faceit_name, get_collegiate_invite, get_invite_link
 from .schools import get_schools
 from .forms import CollegeForm, GraduateForm, HighSchoolForm
 from .email import email_college_confirmation, check_token
@@ -36,7 +36,7 @@ def account(request):
             user = User.objects.get(username=request.user.username)
             email_college_confirmation(user.profile.college_email, request)
             return redirect('pending')
-            
+
         form = CollegeForm(request.POST, schools=schools)
 
         if form.is_valid():
@@ -53,8 +53,18 @@ def account(request):
     else:
         form = CollegeForm(schools=schools)
     
+    user = User.objects.get(username=request.user.username)
+    should_invite = False
 
-    return render(request, 'settings/account.html', {'form': form})
+    if (user.profile.faceit and user.profile.discord and user.profile.verified_student):
+        should_invite = True
+
+    if (user.profile.collegiate_hub_invite):
+        invite_link = get_invite_link(user.profile.collegiate_hub_invite)
+    else:
+        invite_link = None
+
+    return render(request, 'settings/account.html', {'form': form, 'invite': invite_link, 'should_invite': should_invite})
 
 @login_required
 def pending(request):
@@ -135,3 +145,25 @@ def highschool_application(request):
     form = HighSchoolForm()
 
     return render(request, 'settings/application.html', {'form': form, 'type': "HIGH SCHOOL STUDENT"})
+
+@login_required
+def generate_collegiate(request):
+    user = User.objects.get(username=request.user.username)
+    is_verified = user.profile.faceit and user.profile.discord and user.profile.verified_student
+
+    if (not user.profile.collegiate_hub_invite and is_verified):
+        # Generate Link
+        code = get_collegiate_invite()
+        if not code:
+            # Something went wrong generating the invite link
+            print("Something went wrong generating the invite link!")
+            return redirect('account')
+
+        # Assign link to user
+        user = User.objects.get(username=request.user.username)
+        user.profile.collegiate_hub_invite = code
+        user.save()
+
+        return redirect(get_invite_link(code))
+    
+    return redirect('account')
