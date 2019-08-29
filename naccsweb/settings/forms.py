@@ -78,7 +78,7 @@ class EditProfileForm(forms.Form):
 
     first_name = forms.CharField(label="First Name", required=False)
     last_name = forms.CharField(label="Last Name", required=False)
-    bio = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 40}))
+    bio = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 40}), required=False)
 
 
 class MilitaryForm(forms.Form):

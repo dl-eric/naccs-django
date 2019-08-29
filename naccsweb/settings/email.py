@@ -7,8 +7,6 @@ from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 
 def email_college_confirmation(email, request):
-        token = default_token_generator.make_token(request.user)
-
         current_site = get_current_site(request)
         subject = "Verify your College Credentials!"
         
