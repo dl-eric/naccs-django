@@ -84,7 +84,7 @@ def account(request):
             'bio': user.profile.bio
         })
 
-    return render(request, 'settings/account.html', {'form': form, 'invite': invite_link, 'should_invite': should_invite})
+    return render(request, 'settings/account.html', {'form': form, 'profileForm': profileForm, 'invite': invite_link, 'should_invite': should_invite})
 
 @login_required
 def pending(request):
