@@ -59,7 +59,7 @@ def get_faceit_name(faceit_code):
         'Authorization': 'Bearer ' + access_token
     }
     response =  requests.get(FACEIT_INFO_ENDPOINT, headers=headers)
-    print(response.json())
+    
     return response.json().get('nickname')
 
 def get_collegiate_invite():
