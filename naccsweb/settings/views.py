@@ -167,7 +167,7 @@ def highschool_application(request):
         form = HighSchoolForm(request.POST, request.FILES)
         if form.is_valid():
             answers = form.save(commit=False)
-            answers.user = User.objects.get(user=request.user)
+            answers.user = User.objects.get(username=request.user)
             answers.save()
             return redirect('account')
         else:

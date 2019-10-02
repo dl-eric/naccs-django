@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from naccsweb.storage_backends import PrivateMediaStorage
+
 # Create your models here.
 class GraduateFormModel(models.Model):
     class Meta:
@@ -13,7 +15,7 @@ class GraduateFormModel(models.Model):
     user       = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     college    = models.CharField(max_length=80, blank=True)
     grad_date  = models.DateField(null=True, blank=True)
-    proof      = models.FileField(upload_to="graduate/proof/")
+    proof      = models.FileField(upload_to="graduate/proof/", storage=PrivateMediaStorage())
     other      = models.TextField(max_length=500, blank=True)
 
 class HighSchoolFormModel(models.Model):
@@ -28,6 +30,6 @@ class HighSchoolFormModel(models.Model):
     highschool = models.CharField(max_length=80, blank=True)
     college    = models.CharField(max_length=80, blank=True)
     grad_date  = models.DateField(null=True, blank=True)
-    proof      = models.FileField(upload_to="highschool/proof/")
+    proof      = models.FileField(upload_to="highschool/proof/", storage=PrivateMediaStorage())
     other      = models.TextField(max_length=500, blank=True)
 
