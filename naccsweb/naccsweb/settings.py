@@ -27,6 +27,8 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET', '4cEyK87ncSGPHPGdYCD8EPX%d$@5U^Yh6P
 # DEBUG = True
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
+print("DEBUG MODE:", DEBUG)
+
 ALLOWED_HOSTS = ['192.168.254.25', 'localhost', '192.168.254.34']
 
 # Application definition
@@ -144,17 +146,16 @@ if not DEBUG:
     AWS_STATIC_LOCATION = 'static'
     STATICFILES_STORAGE = 'naccsweb.storage_backends.StaticStorage'
     STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
-    AWS_PUBLIC_MEDIA_LOCATION = 'files/public'
+    AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
     DEFAULT_FILE_STORAGE = 'naccsweb.storage_backends.PublicMediaStorage'
     AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
     PRIVATE_FILE_STORAGE = 'naccsweb.storage_backends.PrivateMediaStorage'
     AWS_DEFAULT_ACL = 'public-read'
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, '/static/')]
-
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, '../staticfiles/')
     STATIC_URL = '/static/'
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, '/static/')]
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
     MEDIA_URL = '/files/'
     MEDIA_ROOT = os.path.join(BASE_DIR, '/files/')
 
