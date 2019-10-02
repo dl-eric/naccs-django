@@ -227,6 +227,17 @@ background-color: #ddd;
     height: 500px;
 }
 
+.hub_jumbo {
+    height: 300px;
+    background-image: url('/static/assets/hub_bg.png');
+    background-size: cover;
+    background-position-y: 40%;
+}
+
+.hub_jumbo h1 {
+    color: white;
+}
+
 #queues {
     display: flex;
     flex-direction: row;
@@ -544,4 +555,11 @@ textarea {
     line-height: 40vh;
     color: gray;
     width: 100%;
+}
+
+.sole_object {
+    height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
