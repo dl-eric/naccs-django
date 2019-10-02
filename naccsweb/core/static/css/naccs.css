@@ -1,11 +1,12 @@
 body {
     font-family: 'Open Sans', sans-serif;
-    margin: 0;
+    margin: 70px 0 0 0;
+    background-color: #f3f3f3;
 }
 
 input, select, textarea {
     font-family: 'Open Sans', sans-serif;
-    border: 1px solid #0C2132;
+    border: none;
     border-radius: 2px;
     padding: 20px 4px 4px 4px;
     min-width: 250px;
@@ -31,27 +32,28 @@ label {
 }
 
 nav {
-    background-color: #0C2132;
-    padding: 20px 0;
-    position: relative;
-    margin-top: 25px;
+    z-index: 100;
+    position: fixed;
+    width: 100%;
+    background-color: #363a42;
     color: white;
-    margin-bottom: 30px;
+    margin-top: -70px;
 }
 
 nav #logo {
-    position: absolute;
     border-radius: 10px;
     box-shadow: 0px 0px 12px #333;
 }
 nav #logo img {
     /* Get rid of leading text due to inline */
-    display: block; 
+    display: block;
+    max-height: 50px;
 }
 
 nav a {
     text-decoration: none;
     color: white;
+    display: inline-block;
 }
 
 nav .tabs {
@@ -59,22 +61,25 @@ nav .tabs {
     margin-left: auto;
     letter-spacing: 2px;
     font-size: 12px;
+    height: inherit;
+    line-height: 50px;
 }
 
 nav .tabs a:hover {
-    color: #F65A44;
+    box-shadow: inset 0px -6px 0px 0px #5e7aac;
+    /* border-bottom: thick solid #5e7aac; */
 }
 
 nav .tabs a {
     margin-left: 5px;
     padding: 10px;
-    transition: color 0.1s ease-in;
+    transition: box-shadow 0.1s ease-in;
 }
 
 nav > .content {
     display: flex;
     align-items: center;
-    height: 35px;
+    height: 70px;
 }
 
 .ghost_button, #signup {
@@ -82,8 +87,8 @@ nav > .content {
     background-color: transparent;
     border-style: solid;
     border-width: 2px;
-    border: 2px solid #F65A44;
-    color: #F65A44;
+    border: 2px solid #5e7aac;
+    color: #5e7aac;
     transition: color 0.2s ease-in;
     transition: background-color 0.2s ease-in;
     letter-spacing: 2px;
@@ -91,38 +96,33 @@ nav > .content {
     text-decoration: none;
 }
 
-.ghost_button:hover, #signup:hover, .ghost_button:hover:enabled, #signup:hover:enabled {
+#signup {
+    border: none;
+    font-weight: bold;
     color: white;
-    background-color: #F65A44;
 }
 
-.upup {
-    position:absolute;
+.ghost_button:hover, #signup:hover {
     color: white;
-    top: -20px;
-    margin-left: 15px;
+    background-color: #5e7aac;
 }
 
 .jumbotron {
-    /* position: absolute;
-    top: 80px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: -1; */
     height: 200px;
     display: flex; 
     justify-content: center;
     align-items: center;
     text-align: center;
     color: white;
+    background-image: url('/static/assets/overlay_image.jpg');
+    background-size: cover;
 }
 
 .jumbotron > h1 {
-    margin-top: -20px;
     font-size: 40px;
-    letter-spacing: 8px;
+    letter-spacing: 4px;
     font-weight: lighter;
+    color: #363a42;
 }
 
 .jumbotron > .underlay {
@@ -151,30 +151,18 @@ nav > .content {
     font-size: 1.8em;
 }
 
-/* .jumbotron > .overlay {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    background-color: rgba(100, 10, 10, 0.6);
-    z-index: -2;
-    color: white;
-} */
-
 .jumbotron.main_jumbo {
     height: 300px;
 }
 
 .jumbotron.main_jumbo > h1 {
-    margin-top: -30px;
     animation-name: fadein;
-    animation-duration: 3s;
+    animation-duration: 1s;
     animation-iteration-count: 1;
 }
 
 .jumbotron.main_jumbo > .underlay {
-    height: 600px;
+    height: 500px;
 }
 
 #queues {
@@ -185,9 +173,9 @@ nav > .content {
 
 #partners_bg { 
     text-align: center;
-    background-color: #eee;
+    background-color: #ddd;
     height: 200px;
-    color: #aaa;
+    color: #999;
     letter-spacing: 1.5px;
     margin-top: 30px;
     padding-top: 10px;
@@ -228,17 +216,17 @@ nav > .content {
 }
 
 .panel .body {
-    background-color: #0C2132;
-    width: 300px;
+    background-color: white;
+    width: 100%;
     padding: 5px;
-    border: 2px solid #0C2132;
-    color: white;
+    box-shadow: 0 0 20px 4px #dedede;
+    color: black;
 }
 
 .panel .underline {
     height: 10px;
     width: 200px;
-    background-color: #F65A44;
+    background-color: #5e7aac;
     transform: skew(-30deg);
     margin-bottom: 10px;
 }
@@ -247,8 +235,8 @@ nav > .content {
     font-size: 20px;
     letter-spacing: 2px;
     margin-bottom: 5px;
-    color: #0C2132;
-    font-weight: normal;
+    color: #363a42;
+    font-weight: bold;
 }
 
 .panel .body_content {
@@ -293,7 +281,7 @@ form .ghost_button {
 
 .not_college_button {
     cursor: pointer;
-    color: #F65A44;
+    color: #5e7aac;
     letter-spacing: 2px;
     font-size: 12px;
     margin-left: 50px;
@@ -329,7 +317,9 @@ textarea {
 .ghost_button:disabled, .ghost_button[disabled] {
     color: gray;
     border: 2px solid rgb(97, 97, 97);
+    cursor: default;
     transition: none;
+    pointer-events: none;
 }
 
 @keyframes floatup {
