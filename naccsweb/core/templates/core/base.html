@@ -5,32 +5,46 @@
   <meta charset="utf-8">
   <title>{% block title %}Base Title{% endblock %}</title>
   <link rel="stylesheet" type="text/css" href="{% static 'css/naccs.css' %}">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
   <link rel="shortcut icon" href="{%  static 'favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
+  <div id="body_wrapper">
   <main>
     <nav>
       <section class="content">
         <a id="logo" href="/"><img src="{% static 'assets/headerlogo_small.png' %}"></a>
 
         <section class="tabs">
+          <a href="/hub">HUB</a>
+          <a href="/league">LEAGUE</a>
+          <a href="/users">PLAYERS</a>
+          <a href="/school">SCHOOLS</a>
           {% if not user.is_authenticated %}
           <a href='/login'>LOGIN</a>
           <a id="signup" class="ghost_button" href='/register'>SIGN UP</a>
           {% else %}
-          <a href='/settings/account'>PROFILE</a>
-          <a href='/logout'>LOGOUT</a>
+          <div class="dropdown">
+            <a class="dropbtn">{{ user.profile.nickname }}
+              <i class="fa fa-caret-down"></i>
+            </a>
+            <div class="dropdown_content">
+              <a href="/settings/account">SETTINGS</a>
+              <a href='/logout'>LOGOUT</a>
+            </div>
+          </div>
           {% endif %}
         </section>
       </section>
     </nav>
-    <section class="jumbotron {% if main %} main_jumbo {% endif %}">
+    {% if main %}
+    <section class="jumbotron main_jumbo">
         <h1>
           {% block jumbo_title %}
           {% endblock %}
         </h1>
     </section>
+    {% endif %}
 
     <!-- <section class="content"> -->
       {% block content %}
@@ -69,5 +83,6 @@
       {% endblock %}
     </div>
   </footer>
+  </div>
 </body>
 </html>

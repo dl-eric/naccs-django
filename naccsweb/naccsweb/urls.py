@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'login/$', auth_views.LoginView.as_view(redirect_authenticated_user=True, authentication_form=CustomAuthenticationForm), name='login'),
     url(r'', include('core.urls')),
     url(r'', include('users.urls')),
+    url(r'', include('league.urls')),
     url(r'', include('django.contrib.auth.urls')),
     url(r'settings/', include('settings.urls')),
 ]

@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['192.168.254.25', 'localhost', '192.168.254.34']
 # Application definition
 
 INSTALLED_APPS = [
+    'watson',
+    'league.apps.LeagueConfig',
     'settings.apps.SettingsConfig',
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',

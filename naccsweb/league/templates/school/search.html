@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+{% load watson %}
+
+{% block title %}Search Schools{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="header_flex"> 
+        <h1 id="plain_header">COLLEGES</h1>
+        <div class="header_search">
+            <form action="" method="post">
+                {% csrf_token %}
+                <label for="search_button"><i class="search_icon fa fa-search" aria-hidden="true"></i></label> <input id="search_button" class="hidden" type="submit" value="" >
+                {{ form.query }}
+            </form>
+        </div>
+    </div>
+    
+    <div class="info"><i class="fa fa-info-circle" aria-hidden="true"></i> Don't see your school? Apply to join NACCS through this form <u>here</u>.</div>
+    {% if results %}
+        <div class="search_result">
+            <div class="name">Nickname</div>
+            <div class="college">College</div>
+        </div>
+        {% for player in results %}
+        <div class="search_result">
+            <div class="name">
+                <a href="/users/{{ player.nickname }}">{{ player.nickname }}</a>
+            </div>
+            <div class="college">{{ player.college }}</div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="sole_text">
+            Search current schools competing in NACCS
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

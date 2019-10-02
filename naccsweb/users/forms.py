@@ -4,6 +4,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 
+class PlayerSearchForm(forms.Form):
+    query = forms.CharField(label="Player Name", min_length=3,
+                            widget=forms.TextInput(attrs={'placeholder': 'Search'}))
+    
 class CustomAuthenticationForm(AuthenticationForm):
     def clean_username(self):
         return self.cleaned_data.get('username').lower()
