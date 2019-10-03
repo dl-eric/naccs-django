@@ -448,6 +448,7 @@ textarea {
 }
 
 #player_img {
+    text-align: end;
     height: 200px;
     width: 200px;
 }
