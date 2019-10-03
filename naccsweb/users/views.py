@@ -31,7 +31,7 @@ def profile(request, page_alias):
     except:
         return redirect('not_found')
 
-    profile = {'profile': user}
+    profile = {'player': user}
     return render(request, 'users/profile.html', context=profile)
 
 # Register view

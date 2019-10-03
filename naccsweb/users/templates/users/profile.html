@@ -5,13 +5,17 @@
 
 {% block content %}
 <section id="player_banner">
+    {% if player.profile.picture %}
+        <img id="player_img" src="{% get_media_prefix %}{{ user.profile.picture }}">
+    {% else %}
         <img id="player_img" src="{% static 'assets/silhouette.png' %}">
-        <section id="player_info">
-            <div id="nickname">{{ profile.profile.nickname }}</div>
-            <div id="full_name">{{ profile.first_name }} {{ profile.last_name }}</div>
-            <div id="school">{{ profile.profile.college }}</div><!-- School -->
-            <div id="division">Division I</div>
-        </section>
+    {% endif %}
+    <section id="player_info">
+        <div id="nickname">{{ player.profile.nickname }}</div>
+        <div id="full_name">{{ player.first_name }} {{ profile.last_name }}</div>
+        <div id="school">{{ player.profile.college }}</div><!-- School -->
+        <div id="division">Division I</div>
+    </section>
 </section>
 <div class="content">
     <section class="profile_section">
@@ -19,7 +23,7 @@
             BIO
         </div>
         <div class="body">
-            {{ profile.profile.bio }}
+            {{ player.profile.bio }}
         </div>
     </section>
 
