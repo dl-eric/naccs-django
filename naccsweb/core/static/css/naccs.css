@@ -762,3 +762,28 @@ textarea {
     color: lightslategray;
     font-size: 18px;
 }
+.hub_stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    font-size: 20px;
+}
+
+.hub_stats_column {
+    display: grid;
+    grid-template-rows: 1fr .25fr 1fr;
+
+}
+
+.hub_stats_column .underline {
+    height: 10px;
+    width: 200px;
+    background-color: #5e7aac;
+    transform: skew(-30deg);
+
+}
+
+.stat_title {
+    font-size: 64px;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+    color: #5e7aac;}

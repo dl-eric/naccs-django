@@ -1,22 +1,41 @@
 {% extends 'core/base.html' %}
-{% load static %}
 
 {% block title %}Home{% endblock %}
 
 {% block jumbo_title %}NORTH AMERICAN COLLEGIATE COUNTER-STRIKE{% endblock %}
 
 {% block content %}
+
 <div class="content">
   <article class="panel">
     <h1 class="title">COLLEGIATE HUB</h1>
     <!-- <div class="underline"></div> -->
     <div class="body transparent">
       <div class="body_content">
-        Details Coming Soon
-      </div>
+        <div class="hub_stats">
+          <div class="hub_stats_column">
 
-      <div class="footer"><a class="ghost_button panel_button" href="https://www.faceit.com/en/hub/a67c2ead-9968-4e8b-957b-fb8bc244b302/NACCS%20Queue">MORE INFO</a></div>
-    </div>
+            <div class="stat_title" style="justify-self: center;"><span class="counter">{{player_count}}</span></div>
+            <div class="underline" style="justify-self: center; width: 100px;"></div>
+            <div class="title" style="justify-self: center;"> Players Registered</div>
+          </div>
+          <div class="hub_stats_column">
+            <div class="stat_title" style="justify-self: center;"><span class="counter">{{num_matches}}</span></div>
+            <div class="underline" style="justify-self: center; width: 100px;"></div>
+            <div class="title" style="justify-self: center;">Matches Played</div>
+          </div>
+          <div class="hub_stats_column">
+            <div class="stat_title" style="justify-self: center;"> $<span class="counter">500</span>+</div>
+            <div class="underline" style="justify-self: center; width: 100px;"></div>
+            <div class=" title" style="justify-self: center;">Scholarship Prizes</div>
+          </div>
+
+
+        </div>
+
+        <div class="footer"><a class="ghost_button panel_button"
+            href="https://www.faceit.com/en/hub/a67c2ead-9968-4e8b-957b-fb8bc244b302/NACCS%20Queue">MORE INFO</a></div>
+      </div>
   </article>
   <article class="panel">
     <h1 class="title">POWER PUGS</h1>
@@ -26,7 +45,8 @@
         Details Coming Soon
       </div>
 
-      <div class="footer"><a class="ghost_button panel_button" href="https://www.faceit.com/en/hub/a67c2ead-9968-4e8b-957b-fb8bc244b302/NACCS%20Queue">VISIT</a></div>
+      <div class="footer"><a class="ghost_button panel_button"
+          href="https://www.faceit.com/en/hub/a67c2ead-9968-4e8b-957b-fb8bc244b302/NACCS%20Queue">VISIT</a></div>
     </div>
   </article>
   <section id="queues">
@@ -38,7 +58,8 @@
           Details Coming Soon
         </div>
 
-        <div class="footer"><a class="ghost_button panel_button" href="https://www.faceit.com/en/hub/a67c2ead-9968-4e8b-957b-fb8bc244b302/NACCS%20Queue">VISIT</a></div>
+        <div class="footer"><a class="ghost_button panel_button"
+            href="https://www.faceit.com/en/hub/a67c2ead-9968-4e8b-957b-fb8bc244b302/NACCS%20Queue">VISIT</a></div>
       </div>
     </article>
     <article class="panel">
@@ -49,22 +70,23 @@
           Details Coming Soon
         </div>
         <div class="footer">
-          <a class="ghost_button panel_button" href="https://www.faceit.com/en/hub/9512ae3b-7322-4821-9eca-6e0db1819b03/NACCS%20Power%20Pugs">VISIT</a>
+          <a class="ghost_button panel_button"
+            href="https://www.faceit.com/en/hub/9512ae3b-7322-4821-9eca-6e0db1819b03/NACCS%20Power%20Pugs">VISIT</a>
         </div>
       </div>
     </article>
     <article class="panel">
-        <h1 class="title">COLLEGIATE LEAGUE</h1>
-        <div class="underline"></div>
-        <div class="body">
-          <div class="body_content">
-            Coming Soon
-          </div>
-          <div class="footer">
-            <a class="ghost_button panel_button">VISIT</a>
-          </div>
+      <h1 class="title">COLLEGIATE LEAGUE</h1>
+      <div class="underline"></div>
+      <div class="body">
+        <div class="body_content">
+          Coming Soon
         </div>
-      </article>
+        <div class="footer">
+          <a class="ghost_button panel_button">VISIT</a>
+        </div>
+      </div>
+    </article>
   </section>
 </div>
 
@@ -72,7 +94,8 @@
   <div class="content">
     <h1>Partners</h1>
     <section id="partners">
-      <img class="partner" title="FACEIT" src="{% static 'assets/faceit_pheasant.png' %}">
+      <img class="partner" title="FaceIT" src="/static/assets/faceit_pheasant.png">
+      <img class="partner">
     </section>
   </div>
 </section>
