@@ -5,10 +5,9 @@
 <head>
   <meta charset="utf-8">
   <title>{% block title %}Base Title{% endblock %}</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  
   <link rel="stylesheet" type="text/css" href="{% static 'css/naccs.css' %}">
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400&display=swap" rel="stylesheet">
   <link rel="shortcut icon" href="{%  static 'favicon.ico' %}" type="image/x-icon">
 </head>
 
@@ -40,11 +39,7 @@
           {% endif %}
           </section>
         </section>
-      </section>
     </nav>
-    {% if main %}
-    <section class="jumbotron main_jumbo">
-      </nav>
       {% if main %}
       <section class="jumbotron main_jumbo">
         <h1>
@@ -53,16 +48,11 @@
         </h1>
     </section>
     {% endif %}
-      </section>
-      {% endif %}
 
     <!-- <section class="content"> -->
-      <!-- <section class="content"> -->
       {% block content %}
       {% endblock %}
     <!-- </section> -->
-  </main>
-      <!-- </section> -->
     </main>
 
   <link rel="stylesheet" href="{% static 'css/footer.css' %}">
@@ -96,34 +86,13 @@
           <!-- button -->
           <input class="ghost_button mailing_button" type="submit" value="SIGN UP">
         </div>
-        <div class="mailing_list_form">
-          <form
-            action="https://collegiatecounterstrike.us20.list-manage.com/subscribe/post?u=9130d4a829c4e581d2500c03a&amp;id=07b709535e"
-            method="post" target="_blank" novalidate>
-            <!-- input -->
-            <input class="mailing_input" name="EMAIL" type="email" placeholder="EMAIL ADDRESS" required>
-
-            <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-            <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text"
-                name="b_9130d4a829c4e581d2500c03a_07b709535e" tabindex="-1" value=""></div>
-
-            <!-- button -->
-            <input class="ghost_button mailing_button" type="submit" value="SIGN UP">
-          </form>
-        </div>
         {% endblock %}
     </div>
   </footer>
     </footer>
   </div>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script>
-<script>
-  $('.counter').counterUp({
-    delay: 10,
-    time: 1000
-  });
-</script>
+
+
 
 </html>
