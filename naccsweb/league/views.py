@@ -1,9 +1,137 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
-from .forms import SchoolSearchForm
-from .models import School
+from watson import search as watson
 
-# Create your views here.
+from .forms import SchoolSearchForm, CreateTeamForm, JoinTeamForm
+from .models import School, Team, Player
+
+def on_a_team(user):
+    '''
+    Checks if <user> is already on a team
+    '''
+
+    try:
+        player = Player.objects.get(user=user)
+        on_team = player.team != None
+        print("on team", on_team)
+    except:
+        on_team = False
+
+    return on_team
+
+def can_join_team(user, school):
+    '''
+    Checks if <user> can join a team on <school>
+    '''
+
+    has_email = user.profile.college_email.endswith(school.email_domain)
+    
+    return has_email and not on_a_team(user)
+
+def can_create_team(user, school):
+    '''
+    Checks if <user> can create a team at <school>
+    '''
+
+    has_email = user.profile.college_email.endswith(school.email_domain)
+    is_captain = Team.objects.filter(captain=user).exists()
+
+    return has_email and not is_captain and not on_a_team(user)
+
+def team_pending(request):
+    return render(request, 'team_pending.html')
+
+@login_required
+def team_settings(request):
+    user = User.objects.get(username=request.user)
+
+    try:
+        player = Player.objects.get(user=user)
+        if player.team == None:
+            redirect('index')
+    except:
+        redirect('index')
+
+    team = player.team
+    is_captain = team.captain == user
+
+    return render(request, 'team.html')
+
+@login_required
+def create_team(request, school_id):
+    # Make sure we have a valid school_id
+    try:
+        school = School.objects.get(id=school_id)
+    except:
+        return redirect('index')
+
+    user = User.objects.get(username=request.user)
+
+    # Redirect users that can't create teams. They shouldn't be here!
+    if not can_create_team(user, school):
+        return redirect('index')
+
+    if request.method == 'POST':
+        form = CreateTeamForm(request.POST, school_id=school_id)
+
+        if form.is_valid():
+            team = form.save(commit=False)
+            team.captain = user
+            team.school = school
+            team.save()
+
+            # Create player object if user isn't one.
+            if not Player.objects.filter(user=user).exists():
+                player = Player.objects.create(user=user, team=team)
+            else:
+                player = Player.objects.get(user=user)
+                player.team = team
+                player.save()
+
+            return redirect('team_pending')
+    else:
+        form = CreateTeamForm(school_id=school_id)
+    
+    return render(request, 'create_team.html', {'school': school, 'form': form})
+
+@login_required
+def join_team(request, school_id):
+    # Make sure we have a valid school_id
+    try:
+        school = School.objects.get(id=school_id)
+    except:
+        return redirect('index')
+
+    user = User.objects.get(username=request.user)
+
+    # Redirect users that can't join teams. They shouldn't be here!
+    if not can_join_team(user, school):
+        return redirect('index')
+
+    teams = Team.objects.filter(school=school)
+
+    if request.method == 'POST':
+        form = JoinTeamForm(request.POST, teams=teams)
+
+        if form.is_valid():
+            # Is valid means password passes!
+            team = Team.objects.get(school=school, name=form.data['teams'])
+            try:
+                player = Player.objects.get(user=user)
+                player.team = team
+            except:
+                # Player doesn't exist
+                player = Player.objects.create(user=user, team=team)
+
+            return redirect('team_settings')
+    
+    else:
+        form = JoinTeamForm(teams=teams)
+
+    return render(request, 'join_team.html', {'school': school, 'form': form})
+
 def school_search(request):
     if (request.method == "POST"):
         form = SchoolSearchForm(request.POST)
@@ -17,7 +145,34 @@ def school_search(request):
     return render(request, 'school/search.html', {'form': form})
 
 def school(request, school_id):
-    return render(request, 'school/school.html')
+    try:
+        school = School.objects.get(id=school_id)
+    except:
+        return redirect('not_found')
+
+    try:
+        d1team = Team.objects.get(school=school, division="Division 1")
+    except:
+        d1team = None
+
+    try:
+        d2teams = Team.objects.filter(school=school, division="Division 2")
+    except:
+        d2teams = None
+
+    try:
+        user = User.objects.get(username=request.user)
+        can_create = can_create_team(user, school)
+        can_join = can_join_team(user, school)
+    except:
+        # Not logged in
+        can_create = False
+        can_join = False
+
+    d1team_roster = Player.objects.filter(team=d1team)
+    print(d1team_roster)
+    
+    return render(request, 'school/school.html', {'can_join': can_join, 'can_create': can_create, 'school': school, 'd1team': d1team, 'd1team_roster': d1team_roster, 'd2teams': d2teams})
 
 def hub(request):
     return render(request, 'hub.html')

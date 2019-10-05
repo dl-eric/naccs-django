@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Create Collegiate Team{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h1 id="plain_header">Create Team</h1>
+    <div class="sole_object">
+        <section class="panel">
+            <h1 class="title">Team Information</h1>
+            <!-- <div class="underline"></div> -->
+            <p><strong>Captain: {{ user.profile.nickname }}</strong></p>
+            <p><strong>{{ school.name }}</strong></p>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <p>Note: Join passwords are stored in plain text.</p>
+                <input class="button" type="submit" value="Submit for Approval">
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}

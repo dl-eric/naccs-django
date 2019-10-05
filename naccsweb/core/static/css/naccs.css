@@ -238,6 +238,57 @@ background-color: #ddd;
     color: white;
 }
 
+.school_jumbo {
+    height: 400px;
+    background-image: none;
+    background-color: #aaa;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 0;
+}
+
+.school_jumbo > img {
+    width: 300px;
+    height: 300px;
+}
+
+.school_jumbo .name {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0 80px;
+}
+
+.school_jumbo .location {
+    font-size: 28px;
+}
+
+.school_jumbo .rank {
+    font-size: 28px;
+}
+
+.jumbo_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.jumbo_row_element {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    flex-basis: 20%;
+}
+
+.jumbo_row_element:nth-child(2) {
+    flex-basis: 60%;
+}
+
+.jumbo_row_element > h3 {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+}
+
 #queues {
     display: flex;
     flex-direction: row;
@@ -526,7 +577,7 @@ textarea {
     display: inline-block;
 }
 
-.search_result:nth-child(2) {
+.player:nth-child(2) {
     background-color: transparent;
     box-shadow: none;
     padding-bottom: 0;
@@ -534,7 +585,6 @@ textarea {
 
 .search_result {
     display: flex;
-    justify-content: space-between;
     background-color: white;
     box-shadow: 0 0 10px 2px #eee;
     border-radius: 4px;
@@ -542,12 +592,53 @@ textarea {
     margin: 10px 0;
 }
 
-.search_result .name {
+.search_result.player {
+    justify-content: space-between;
+}
+
+.player > .name {
     font-size: 24px;
 }
 
-.search_result .college {
+.player > .college {
     font-size: 20px;
+}
+
+.result_wrapper {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.school_result_link {
+    text-decoration: none;
+    color: inherit;
+    margin: 20px 0;
+}
+
+.school {
+    flex-direction: column;
+    margin: 0;
+    width: 300px;
+}
+
+.school > .school_pic {
+    align-self: center;
+    height: 300px;
+    width: 300px;
+    margin-bottom: 20px;
+}
+
+.school > .name {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.school > .location {
+    font-size: 16px;
+    text-align: center;
 }
 
 .sole_text {
@@ -568,4 +659,106 @@ textarea {
 #settings_picture {
     height: 200px;
     width: 200px;
+}
+
+.division > .header {
+    text-align: center;
+}
+
+.division h1 {
+    font-size: 40px;
+    color: #363a42;
+    margin-bottom: 4px;
+}
+
+.division h2 {
+    margin-top: 0;
+    font-size: 30px;
+    color: #5e7aac;
+}
+
+.division .roster {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.roster > .player {
+    height: 110px;
+    width: 320px;
+    background-color: white;
+    padding: 20px 16px;
+    box-shadow: inset 6px 0px 0px 0px #5e7aac;
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 20px;
+}
+
+.player_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.player_info > .role {
+    color: lightslategray;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.player_info > .name {
+    color:#5e7aac;
+    font-size: 24px;
+}
+
+.player > img {
+    height: 110px;
+    width: 110px;
+}
+
+.create_team_btn {
+    text-decoration: none;
+    display: block;
+    margin: 0 auto;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    line-height: 50px;
+    width: 150px;
+    height: 50px;
+    background-color: #5e7aac;
+    color: white;
+    border-radius: 4px;
+}
+
+.d2teams {
+    padding: 30px 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.d2team {
+    position: relative;
+    height: 60px;
+    width: 320px;
+    background-color: white;
+    padding: 20px 16px;
+    box-shadow: inset 6px 0px 0px 0px #5e7aac;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin-bottom: 20px;
+}
+
+.d2team > .name {
+    font-weight: bold;
+    font-size: 24px;
+    color: #5e7aac;
+}
+
+.d2team > .captain {
+    color: lightslategray;
+    font-size: 18px;
 }

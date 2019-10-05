@@ -4,9 +4,16 @@ from django.core.validators import validate_image_file_extension
 from django.contrib.auth.models import User
 from users.models import Profile
 
+from league.models import Player
+
 from .models import GraduateFormModel, HighSchoolFormModel
 from .schools import get_schools
 
+
+class PlayerForm(forms.ModelForm):
+    class Meta:
+        model = Player
+        exclude = ['has_paid', 'user', 'team']
 
 class CollegeForm(forms.Form):
     def __init__(self, *args, **kwargs):

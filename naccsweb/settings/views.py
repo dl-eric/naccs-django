@@ -4,9 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 
+from league.models import Player
+
 from .oauth import get_discord_name, get_faceit_name, get_collegiate_invite, get_invite_link
 from .schools import get_schools
-from .forms import CollegeForm, GraduateForm, HighSchoolForm, EditProfileForm, EditUserForm
+from .forms import CollegeForm, GraduateForm, HighSchoolForm, EditProfileForm, EditUserForm, PlayerForm
 from .email import email_college_confirmation, check_token
 from .models import GraduateFormModel, HighSchoolFormModel
 
@@ -36,6 +38,13 @@ def account(request):
     user = User.objects.get(username=request.user.username)
     userForm = EditUserForm(instance=user)
     profileForm = EditProfileForm(instance=user.profile)
+
+    try:
+        player = Player.objects.get(user=user)
+        playerForm = PlayerForm(instance=player)
+    except:
+        player = None
+        playerForm = None
 
     if request.method == 'POST':
         # Check if resend was hit
@@ -72,6 +81,13 @@ def account(request):
                 # user.last_name = profileForm['last_name'].value()
                 # user.save()
                 return redirect('account')
+
+        if ('team' in request.POST):
+            playerForm = PlayerForm(request.POST, instance=player)
+
+            if playerForm.is_valid():
+                playerForm.save()
+                return redirect('account')
               
     should_invite = False
 
@@ -82,8 +98,8 @@ def account(request):
         invite_link = get_invite_link(user.profile.collegiate_hub_invite)
     else:
         invite_link = None
-
-    return render(request, 'settings/account.html', {'form': form, 'profileForm': profileForm, 'userForm': userForm, 'invite': invite_link, 'should_invite': should_invite})
+        
+    return render(request, 'settings/account.html', {'playerForm': playerForm, 'player': player, 'form': form, 'profileForm': profileForm, 'userForm': userForm, 'invite': invite_link, 'should_invite': should_invite})
 
 @login_required
 def pending(request):

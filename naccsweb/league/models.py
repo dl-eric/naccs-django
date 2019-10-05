@@ -1,15 +1,41 @@
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
+
+def get_file_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return "school_pics/" + filename
 
 class School(models.Model):
-    name = models.CharField(max_length=80, blank=True)
-    city = models.CharField(max_length=64, blank=True)
-    state = models.CharField(max_length=64, blank=True)
-    is_active = models.BooleanField(default=False, blank=True)
+    def __str__(self):
+        return self.name
+    name = models.CharField(max_length=80)
+    email_domain = models.CharField(max_length=64, blank=True)
+    city = models.CharField(max_length=64)
+    state = models.CharField(max_length=64)
+    is_active = models.BooleanField(default=False)
+    abbreviation = models.CharField(max_length=12)
+    picture = models.ImageField(upload_to=get_file_path, null=True)
+    rank = models.PositiveIntegerField(blank=True, default=0)
+    main_color = models.CharField(max_length=6, blank=True)
 
 class Team(models.Model):
-    name = models.CharField(max_length=80, blank=True)
-    division = models.CharField(max_length=32, blank=True)
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=80)
+    division = models.CharField(max_length=32)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
-    captain = models.CharField(max_length=80, blank=True)
-    roster = models.ManyToManyField(User)
+    captain = models.ForeignKey(User, related_name="captain", on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=False)
+    join_password = models.CharField(max_length=64, blank=True)
+
+class Player(models.Model):
+    def __str__(self):
+        return self.user.profile.nickname
+
+    role = models.CharField(max_length=12, blank=True)
+    has_paid = models.BooleanField(default=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    team = models.OneToOneField(Team, on_delete=models.SET_NULL, null=True)

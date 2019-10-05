@@ -17,12 +17,12 @@
     </div>
     
     {% if results %}
-        <div class="search_result">
+        <div class="search_result player">
             <div class="name">Nickname</div>
             <div class="college">College</div>
         </div>
         {% for player in results %}
-        <div class="search_result">
+        <div class="search_result player">
             <div class="name">
                 <a href="/users/{{ player.nickname }}">{{ player.nickname }}</a>
             </div>

@@ -98,7 +98,22 @@
             </section>
         </section>
     </section>
-
+    <hr>
+    {% if player.team %}
+    <section id="account_settings">
+        <section id="main">
+            <section class="panel">
+                <h1 class="title">League Team Settings</h1>
+                <p><strong>Team: {{ player.team.name }}</strong></p>
+                <form action="" method="post" name="team">
+                    {% csrf_token %}
+                    {{ playerForm.as_p }}
+                    <input class="button" type="submit" value="Update" name="team">
+                </form>
+            </section>
+        </section>
+    </section>
+    {% endif %}
 </div>
 <script src="https://cdn.faceit.com/oauth/faceit-oauth-sdk-1.2.7.min.js" type="text/javascript"></script>
 <script type="text/javascript">
