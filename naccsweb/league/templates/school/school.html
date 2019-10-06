@@ -74,6 +74,9 @@
     {% if can_join %}
     <a href="/join_team/{{ school.id }}" class="create_team_btn">Join a Team</a>
     {% endif %}
+    {% if team %}
+    <a href="/manage_team/{{ team.id }}" class="create_team_btn">Manage Team</a>
+    {% endif %}
     <br>
 </div>
 {% endblock %}

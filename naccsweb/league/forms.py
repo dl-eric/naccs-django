@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Team, School
+from .models import Team, School, Player
 
 
 class SchoolSearchForm(forms.Form):
@@ -34,6 +34,16 @@ class JoinTeamForm(forms.Form):
 
     teams = forms.CharField(label="Team")
     password = forms.CharField(label="Join Password", widget=forms.PasswordInput())
+
+class EditTeamForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ('name', 'join_password')
+
+class EditPlayerForm(forms.ModelForm):
+    class Meta:
+        model = Player
+        fields = ('role',)
 
 class CreateTeamForm(forms.ModelForm):
     class Meta:
