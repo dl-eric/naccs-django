@@ -762,6 +762,7 @@ textarea {
     color: lightslategray;
     font-size: 18px;
 }
+
 .hub_stats {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -798,4 +799,36 @@ textarea {
     margin-bottom: 5px;
     color: #5e7aac;
     justify-self: center;
+}
+
+.full_width {
+    width: 100%;
+}
+
+.manage_players {
+    display: flex;
+    flex-direction: column;
+    width: inherit;
+}
+
+.manage_players > .player {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.btn {
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.kick_btn {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    margin: 0 10px;
 }

@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from watson import search as watson
 
-from .forms import SchoolSearchForm, CreateTeamForm, JoinTeamForm
+from .forms import SchoolSearchForm, CreateTeamForm, JoinTeamForm, EditTeamForm
 from .models import School, Team, Player
 
 def on_a_team(user):
@@ -39,6 +39,26 @@ def can_create_team(user, school):
     is_captain = Team.objects.filter(captain=user).exists()
 
     return has_email and not is_captain and not on_a_team(user)
+
+@login_required
+def manage_team(request, team_id):
+    user = User.objects.get(username=request.user)
+
+    try:
+        team = Team.objects.get(id=team_id)
+        
+        # Check if player is on the team
+        player = Player.objects.get(user=user, team=team)
+
+        # Get roster of the team
+        roster = Player.objects.filter(team=team)
+        print(roster)
+    except:
+        return redirect('index')
+
+    form = EditTeamForm(instance=team)
+
+    return render(request, 'manage_team.html', {'form': form, 'user': user, 'team': team, 'roster': roster})
 
 def team_pending(request):
     return render(request, 'team_pending.html')
@@ -164,15 +184,19 @@ def school(request, school_id):
         user = User.objects.get(username=request.user)
         can_create = can_create_team(user, school)
         can_join = can_join_team(user, school)
+
+        try:
+            team = Team.objects.get(school=school, captain=user)
+        except:
+            team = None
     except:
         # Not logged in
         can_create = False
         can_join = False
 
     d1team_roster = Player.objects.filter(team=d1team)
-    print(d1team_roster)
     
-    return render(request, 'school/school.html', {'can_join': can_join, 'can_create': can_create, 'school': school, 'd1team': d1team, 'd1team_roster': d1team_roster, 'd2teams': d2teams})
+    return render(request, 'school/school.html', {'team': team, 'can_join': can_join, 'can_create': can_create, 'school': school, 'd1team': d1team, 'd1team_roster': d1team_roster, 'd2teams': d2teams})
 
 def hub(request):
     return render(request, 'hub.html')

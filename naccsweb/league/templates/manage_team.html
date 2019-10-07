@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Manage Team{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h1 id="plain_header">Manage Team</h1>
+    <section class="panel full_width">
+        <h1 class="title">{{ team.name }}</h1>
+        <!-- <div class="underline"></div> -->
+        <p><strong>{{ team.school.name }}</strong></p>
+
+        <form action="" method="post">
+        {{ form.as_p }}
+        <input class="button" type="submit" value="Change">
+        </form>
+
+        <h1 class="title">Roster</h1>
+        <div class="manage_players">
+            {% for player in roster %}
+            <div class="player">
+                {{ player.user.profile.nickname }}
+                <div class="player_buttons">
+                    {% if not player.user == user %}
+                    <a class="btn kick_btn" href="#">Kick</a>
+                    {% endif %}
+                    {% if player.has_paid %}
+                    Paid!
+                    {% else %}
+                    <a href="#">Pay</a>
+                    {% endif %}
+                </div>
+            </div>
+                
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
