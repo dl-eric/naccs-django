@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %}Collegiate Hub{% endblock %}
 
@@ -15,24 +16,10 @@
     <h1 class="title">Leaderboard</h1>
     <div class="hub_page">
       <div class="hub_content">
-        <table>
-          <tr>
-            <th>Firstname</th>
-            <th>Lastname</th>
-            <th>Age</th>
-          </tr>
-          {% for player in leaderboard %}
-          <tr>
-            <td>{{player.player.nickname}}</td>
-            <td>Smith</td>
-            <td>50</td>
-          </tr>
-
-          {% endfor %}
-        </table>
-
       </div>
+
     </div>
-  </article>
+</div>
+</article>
 </div>
 {% endblock %}

@@ -29,21 +29,21 @@
         </div>
         <section class="roster">
             {% if d1team %}
-                {% if d1team.is_active %}
-                {% for player in d1team_roster %}
-                <article class="player">
-                    <div class="player_info">
-                        <div class="role">{{ player.role }}</div>
-                        <div class="name">{{ player.user.profile.nickname }}</div>
-                        <div class="realname">{{ player.user.first_name }} {{ player.user.last_name }}</div>
-                        <a href="/users/{{ player.user.username }}">Read More</a>
-                    </div>
-                    
-                </article>
-                {% endfor %}
-                {% else %}
-                Team Pending Approval
-                {% endif %}
+            {% if d1team.is_active %}
+            {% for player in d1team_roster %}
+            <article class="player">
+                <div class="player_info">
+                    <div class="role">{{ player.role }}</div>
+                    <div class="name">{{ player.user.profile.nickname }}</div>
+                    <div class="realname">{{ player.user.first_name }} {{ player.user.last_name }}</div>
+                    <a href="/users/{{ player.user.username }}">Read More</a>
+                </div>
+                <img src="{{ player.user.profile.picture.url }}">
+            </article>
+            {% endfor %}
+            {% else %}
+            Team Pending Approval
+            {% endif %}
             {% elif can_create %}
             <a href="/create_team/{{ school.id }}" class="create_team_btn">Create Team</a>
             {% else %}
@@ -61,10 +61,10 @@
         {% endif %}
         <section class="d2teams">
             {% for team in d2teams %}
-                <article class="d2team">
-                    <div class="name">{{ team.name }}</div>
-                    <div class="captain">Captain: {{ team.captain }}</div>
-                </article>
+            <article class="d2team">
+                <div class="name">{{ team.name }}</div>
+                <div class="captain">Captain: {{ team.captain }}</div>
+            </article>
             {% endfor %}
         </section>
     </section>

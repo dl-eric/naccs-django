@@ -3,15 +3,15 @@ from django.contrib.auth.models import User
 import paypalrestsdk as paypal
 from paypalrestsdk import *
 from django.contrib.auth.decorators import login_required
-from .payments import div_one_payment, div_two_payment,div_one_sub_payment,div_two_sub_payment
+from .payments import div_one_payment, div_two_payment, div_one_sub_payment, div_two_sub_payment
 from .models import Payment
-from .faceit import get_hub_leaderboard
 
 
 from watson import search as watson
 
 from .forms import SchoolSearchForm, CreateTeamForm, JoinTeamForm, EditTeamForm
 from .models import School, Team, Player
+
 
 def on_a_team(user):
     '''
@@ -27,14 +27,16 @@ def on_a_team(user):
 
     return on_team
 
+
 def can_join_team(user, school):
     '''
     Checks if <user> can join a team on <school>
     '''
 
     has_email = user.profile.college_email.endswith(school.email_domain)
-    
+
     return has_email and not on_a_team(user)
+
 
 def can_create_team(user, school):
     '''
@@ -46,6 +48,7 @@ def can_create_team(user, school):
 
     return has_email and not is_captain and not on_a_team(user)
 
+
 @login_required
 def manage_team(request, team_id):
     user = User.objects.get(username=request.user)
@@ -53,7 +56,6 @@ def manage_team(request, team_id):
     try:
         team = Team.objects.get(id=team_id)
 
-        
         # Check if player is on the team
         player = Player.objects.get(user=user, team=team)
 
@@ -61,20 +63,22 @@ def manage_team(request, team_id):
         roster = Player.objects.filter(team=team)
         print(roster)
 
-        #Get paid members of the roster
-        paid_members = Player.objects.filter(team=team, has_paid = 1)
+        # Get paid members of the roster
+        paid_members = Player.objects.filter(team=team, has_paid=1)
         print(paid_members)
-        
+
     except:
         print('error')
         return redirect('index')
 
     form = EditTeamForm(instance=team)
 
-    return render(request, 'manage_team.html', {'form': form, 'user': user, 'team': team, 'roster': roster, 'paid_members':paid_members})
+    return render(request, 'manage_team.html', {'form': form, 'user': user, 'team': team, 'roster': roster, 'paid_members': paid_members})
+
 
 def team_pending(request):
     return render(request, 'team_pending.html')
+
 
 @login_required
 def team_settings(request):
@@ -91,6 +95,7 @@ def team_settings(request):
     is_captain = team.captain == user
 
     return render(request, 'team.html')
+
 
 @login_required
 def create_team(request, school_id):
@@ -126,8 +131,9 @@ def create_team(request, school_id):
             return redirect('team_pending')
     else:
         form = CreateTeamForm(school_id=school_id)
-    
+
     return render(request, 'create_team.html', {'school': school, 'form': form})
+
 
 @login_required
 def join_team(request, school_id):
@@ -159,11 +165,12 @@ def join_team(request, school_id):
                 player = Player.objects.create(user=user, team=team)
 
             return redirect('team_settings')
-    
+
     else:
         form = JoinTeamForm(teams=teams)
 
     return render(request, 'join_team.html', {'school': school, 'form': form})
+
 
 def school_search(request):
     if (request.method == "POST"):
@@ -171,11 +178,12 @@ def school_search(request):
 
         if (form.is_valid()):
             search_results = watson.filter(School, form.data['query'])
-            return render(request, 'school/search.html', {'form': form, 'results':search_results})
+            return render(request, 'school/search.html', {'form': form, 'results': search_results})
     else:
         form = SchoolSearchForm()
-    
+
     return render(request, 'school/search.html', {'form': form})
+
 
 def school(request, school_id):
     try:
@@ -208,29 +216,38 @@ def school(request, school_id):
         can_join = False
 
     d1team_roster = Player.objects.filter(team=d1team)
-    
+
     return render(request, 'school/school.html', {'team': team, 'can_join': can_join, 'can_create': can_create, 'school': school, 'd1team': d1team, 'd1team_roster': d1team_roster, 'd2teams': d2teams})
 
+
 def hub(request):
-    leaderboard = get_hub_leaderboard()
-    return render(request, 'hub.html', {'leaderboard': leaderboard})
+    return render(request, 'hub.html')
+
 
 def league(request):
     return render(request, 'league.html')
 
+
 def one_payment(request):
     return div_one_payment()
+
+
 def two_payment(request):
     return div_two_payment()
+
+
 def one_sub_payment(request):
     return div_one_sub_payment()
+
+
 def two_sub_payment(request):
     return div_two_sub_payment()
+
 
 def payment_return(request):
     user = User.objects.get(username=request.user)
     player = Player.objects.get(user=user)
-    
+
     # ID of the payment. This ID is provided when creating payment.
     paymentId = request.GET.get('paymentId')
     payer_id = request.GET.get('PayerID')
@@ -238,7 +255,8 @@ def payment_return(request):
 
     # PayerID is required to approve the payment.
     if payment.execute({"payer_id": payer_id}):  # return True or False
-        newPayment = Payment(name=request.user,paymentid=paymentId, payerid=payer_id ,user=user)
+        newPayment = Payment(
+            name=request.user, paymentid=paymentId, payerid=payer_id, user=user)
         newPayment.save()
         player.has_paid = 1
         player.save()
@@ -248,4 +266,3 @@ def payment_return(request):
     else:
         print('error')
         return redirect('index')
-    
