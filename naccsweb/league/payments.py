@@ -23,8 +23,8 @@ def div_one_payment():
 
         # Redirect URLs
         "redirect_urls": {
-            "return_url": "http://localhost:8000/payment_return?success=true",
-            "cancel_url": "http://localhost:8000/payment_return?cancel=true"},
+            "return_url": "http://collegiatecounterstrike.com/payment_return?success=true",
+            "cancel_url": "http://collegiatecounterstrike.com/payment_return?cancel=true"},
 
         # Transaction
         # A transaction defines the contract of a
