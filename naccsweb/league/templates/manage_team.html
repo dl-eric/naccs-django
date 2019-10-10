@@ -9,6 +9,7 @@
         <h1 class="title">{{ team.name }}</h1>
         <!-- <div class="underline"></div> -->
         <p><strong>{{ team.school.name }}</strong></p>
+    
 
         <form action="" method="post">
         {{ form.as_p }}
@@ -19,16 +20,31 @@
         <div class="manage_players">
             {% for player in roster %}
             <div class="player">
+                {% if player.has_paid == True %}
+                <i class="fa fa-check-circle">{{ player.user.profile.nickname }}</i>
+                {% endif %}
                 {{ player.user.profile.nickname }}
                 <div class="player_buttons">
                     {% if not player.user == user %}
                     <a class="btn kick_btn" href="#">Kick</a>
                     {% endif %}
-                    {% if player.has_paid %}
-                    Paid!
+
+                    <!-- Will show the payment button only for user logged in-->
+                    {% if player.user == user %}
+                    {% if player.has_paid == True %}
+                    <h5>Paid!</h5>
+                    {% elif paid_members.count >= 5 and team.division == 'Division 1' %}
+                    <a class="create_team_btn" href="/one_sub_payment">Pay Sub</a>
+                    {% elif paid_members.count < 5 and team.division == 'Division 2' %}
+                    <a class="create_team_btn" href="/two_sub_payment">Pay Sub</a>
+                    {% elif team.division == 'Division 1' %}
+                    <a class="create_team_btn" href="/one_payment">Pay</a>
                     {% else %}
-                    <a href="#">Pay</a>
+                    <a class="create_team_btn" href="/two_payment">Pay</a>
                     {% endif %}
+                    {% endif %}
+                    
+                    
                 </div>
             </div>
                 

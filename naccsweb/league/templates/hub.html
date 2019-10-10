@@ -4,6 +4,35 @@
 
 {% block content %}
 <section class="jumbotron hub_jumbo">
-    <h1>COLLEGIATE HUB</h1>
+  <h1>COLLEGIATE HUB</h1>
 </section>
+<div class="content">
+  <article class="panel">
+    <h1 class="title">HOW TO JOIN?</h1>
+    <div class="hub_page">
+      <div class="hub_content">dasdasda</div>
+    </div>
+    <h1 class="title">Leaderboard</h1>
+    <div class="hub_page">
+      <div class="hub_content">
+        <table>
+          <tr>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Age</th>
+          </tr>
+          {% for player in leaderboard %}
+          <tr>
+            <td>{{player.player.nickname}}</td>
+            <td>Smith</td>
+            <td>50</td>
+          </tr>
+
+          {% endfor %}
+        </table>
+
+      </div>
+    </div>
+  </article>
+</div>
 {% endblock %}
