@@ -21,7 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET', '4cEyK87ncSGPHPGdYCD8EPX%d$@5U^Yh6P0sw8qvkQuoL3&L@TWhgM%cs5')
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET', '4cEyK87ncSGPHPGdYCD8EPX%d$@5U^Yh6P0sw8qvkQuoL3&L@TWhgM%cs5')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
@@ -152,7 +153,8 @@ if DJANGO_USE_S3:
 
     # Public Media
     AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
-    MEDIA_URL = 'https://%s/%s/' %(AWS_S3_CUSTOM_DOMAIN, AWS_PUBLIC_MEDIA_LOCATION)
+    MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN,
+                                    AWS_PUBLIC_MEDIA_LOCATION)
     DEFAULT_FILE_STORAGE = 'naccsweb.storage_backends.PublicMediaStorage'
 
     # Private Media
@@ -181,3 +183,10 @@ if os.environ.get('DJANGO_SECURE'):
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+
+if(os.environ.get('PAYPAL_MODE') == "live"):
+    PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
+    CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+elif(os.environ.get('PAYPAL_MODE') == "sandbox"):
+    PAYPAL_CLIENT_ID = os.environ.get('SANDBOX_CLIENT_ID')
+    CLIENT_SECRET = os.environ.get('SANDBOX_SECRET_ID')

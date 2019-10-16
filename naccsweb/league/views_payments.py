@@ -1,19 +1,19 @@
 from django.shortcuts import render, redirect
 import paypalrestsdk as paypal
 from paypalrestsdk import *
+from naccsweb.settings import PAYPAL_CLIENT_ID, CLIENT_SECRET
 import os
-
 
 paypal.configure({
     "mode": os.environ.get('PAYPAL_MODE'),  # sandbox or live
-    "client_id": os.environ.get('SANDBOX_CLIENT_ID'),
-    "client_secret": os.environ.get('SANDBOX_SECRET_ID')})
+    "client_id": PAYPAL_CLIENT_ID,
+    "client_secret": CLIENT_SECRET})
 
 
 
 def div_one_payment():
- 
-    payment = paypal.Payment({
+
+    payment=paypal.Payment({
         "intent": "sale",
 
         # Payer
@@ -57,7 +57,7 @@ def div_one_payment():
             if link.method == "REDIRECT":
                 # Convert to str to avoid google appengine unicode issue
                 # https://github.com/paypal/rest-api-sdk-python/pull/58
-                redirect_url = str(link.href)
+                redirect_url=str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
                 return redirect(redirect_url)
     else:
@@ -66,7 +66,7 @@ def div_one_payment():
         return "Error while creating payment"
 
 def div_two_payment():
-    payment = paypal.Payment({
+    payment=paypal.Payment({
             "intent": "sale",
 
             # Payer
@@ -110,7 +110,7 @@ def div_two_payment():
             if link.method == "REDIRECT":
                     # Convert to str to avoid google appengine unicode issue
                     # https://github.com/paypal/rest-api-sdk-python/pull/58
-                redirect_url = str(link.href)
+                redirect_url=str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
                 return redirect(redirect_url)
     else:
@@ -119,7 +119,7 @@ def div_two_payment():
         return "Error while creating payment"
 
 def div_one_sub_payment():
-    payment = paypal.Payment({
+    payment=paypal.Payment({
             "intent": "sale",
 
             # Payer
@@ -163,7 +163,7 @@ def div_one_sub_payment():
             if link.method == "REDIRECT":
                     # Convert to str to avoid google appengine unicode issue
                     # https://github.com/paypal/rest-api-sdk-python/pull/58
-                redirect_url = str(link.href)
+                redirect_url=str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
                 return redirect(redirect_url)
     else:
@@ -172,7 +172,7 @@ def div_one_sub_payment():
         return "Error while creating payment"
 
 def div_two_sub_payment():
-    payment = paypal.Payment({
+    payment=paypal.Payment({
             "intent": "sale",
 
             # Payer
@@ -216,7 +216,7 @@ def div_two_sub_payment():
             if link.method == "REDIRECT":
                     # Convert to str to avoid google appengine unicode issue
                     # https://github.com/paypal/rest-api-sdk-python/pull/58
-                redirect_url = str(link.href)
+                redirect_url=str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
                 return redirect(redirect_url)
     else:
