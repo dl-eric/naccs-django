@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %}{{ school.name }}{% endblock %}
 
@@ -29,21 +30,26 @@
         </div>
         <section class="roster">
             {% if d1team %}
-            {% if d1team.is_active %}
-            {% for player in d1team_roster %}
-            <article class="player">
-                <div class="player_info">
-                    <div class="role">{{ player.role }}</div>
-                    <div class="name">{{ player.user.profile.nickname }}</div>
-                    <div class="realname">{{ player.user.first_name }} {{ player.user.last_name }}</div>
-                    <a href="/users/{{ player.user.username }}">Read More</a>
-                </div>
-                <img src="{{ player.user.profile.picture.url }}">
-            </article>
-            {% endfor %}
-            {% else %}
-            Team Pending Approval
-            {% endif %}
+                {% if d1team.is_active %}
+                {% for player in d1team_roster %}
+                <article class="player">
+                    <div class="player_info">
+                        <div class="role">{{ player.role }}</div>
+                        <div class="name">{{ player.user.profile.nickname }}</div>
+                        <div class="realname">{{ player.user.first_name }} {{ player.user.last_name }}</div>
+                        <a href="/users/{{ player.user.username }}">Read More</a>
+                    </div>
+
+                    {% if player.user.profile.picture %}
+                    <img src="{{ player.user.profile.picture.url }}">
+                    {% else %}
+                    <img src="{% static 'assets/silhouette.png' %}">
+                    {% endif %}
+                </article>
+                {% endfor %}
+                {% else %}
+                Team Pending Approval
+                {% endif %}
             {% elif can_create %}
             <a href="/create_team/{{ school.id }}" class="create_team_btn">Create Team</a>
             {% else %}

@@ -71,15 +71,8 @@ def account(request):
             profileForm = EditProfileForm(request.POST, request.FILES,
                                           instance=user.profile)
             if profileForm.is_valid() and userForm.is_valid():
-                #print(profileForm.cleaned_data['profile_pic'])
                 profileForm.save()
                 userForm.save()
-                # user = User.objects.get(username=request.user.username)
-                # print(profileForm.cleaned_data['profile_pic'])
-                # user.profile.bio = profileForm['bio'].value()
-                # user.first_name = profileForm['first_name'].value()
-                # user.last_name = profileForm['last_name'].value()
-                # user.save()
                 return redirect('account')
 
         if ('team' in request.POST):
@@ -89,6 +82,11 @@ def account(request):
                 playerForm.save()
                 return redirect('account')
               
+        if ('leave_team' in request.POST):
+            player.team = None
+            player.save()
+            return redirect('account')
+
     should_invite = False
 
     if (user.profile.faceit and user.profile.discord and user.profile.verified_student):

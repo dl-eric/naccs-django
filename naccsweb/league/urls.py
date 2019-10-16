@@ -10,7 +10,6 @@ urlpatterns = [
     path(r'create_team/<school_id>', views.create_team, name='create_team'),
     path(r'team_pending', views.team_pending, name='team_pending'),
     path(r'join_team/<school_id>', views.join_team, name='join_team'),
-    path(r'team_settings', views.team_settings, name='team_settings'),
     path(r'manage_team/<team_id>', views.manage_team),
     path(r'one_payment', views.one_payment, name='one_payment'),
     path(r'two_payment', views.two_payment, name='two_payment'),
@@ -20,5 +19,6 @@ urlpatterns = [
     path(r'payment_return?success=true',
          views.payment_return, name='payment_return_success'),
     path(r'payment_return?cancel=true',
-         views.payment_return, name='payment_return_cancel')
+         views.payment_return, name='payment_return_cancel'),
+    path(r'kick_user', views.kick_user)
 ]
