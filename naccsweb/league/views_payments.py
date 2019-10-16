@@ -59,7 +59,7 @@ def div_one_payment():
                 # https://github.com/paypal/rest-api-sdk-python/pull/58
                 redirect_url = str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
-                return redirect('one_payment')
+                return redirect(redirect_url)
     else:
         print("Error while creating payment:")
         print(payment.error)
@@ -112,7 +112,7 @@ def div_two_payment():
                     # https://github.com/paypal/rest-api-sdk-python/pull/58
                 redirect_url = str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
-                return redirect('index')
+                return redirect(redirect_url)
     else:
         print("Error while creating payment:")
         print(payment.error)
@@ -165,7 +165,7 @@ def div_one_sub_payment():
                     # https://github.com/paypal/rest-api-sdk-python/pull/58
                 redirect_url = str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
-                return redirect('index')
+                return redirect(redirect_url)
     else:
         print("Error while creating payment:")
         print(payment.error)
@@ -218,7 +218,7 @@ def div_two_sub_payment():
                     # https://github.com/paypal/rest-api-sdk-python/pull/58
                 redirect_url = str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
-                return redirect('index')
+                return redirect(redirect_url)
     else:
         print("Error while creating payment:")
         print(payment.error)
