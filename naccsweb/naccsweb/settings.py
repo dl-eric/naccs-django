@@ -11,7 +11,13 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
+sentry_sdk.init(
+        dsn="https://4aa63e7f917a4de28df9af3ae482eaf2@sentry.io/1781235",
+        integrations=[DjangoIntegration()]
+)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -184,9 +190,14 @@ if os.environ.get('DJANGO_SECURE'):
     CSRF_COOKIE_SECURE = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
-if(os.environ.get('PAYPAL_MODE') == "live"):
+PAYPAL_MODE = os.environ.get('PAYPAL_MODE')
+
+if(PAYPAL_MODE == "live"):
     PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
     CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
-elif(os.environ.get('PAYPAL_MODE') == "sandbox"):
+elif(PAYPAL_MODE == "sandbox"):
     PAYPAL_CLIENT_ID = os.environ.get('SANDBOX_CLIENT_ID')
     CLIENT_SECRET = os.environ.get('SANDBOX_SECRET_ID')
+else:
+    PAYPAL_CLIENT_ID = None
+    CLIENT_SECRET = None
