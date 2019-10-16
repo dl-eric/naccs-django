@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+import paypalrestsdk as paypal
+from paypalrestsdk import *
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 
 from watson import search as watson
 
 from .forms import SchoolSearchForm, CreateTeamForm, JoinTeamForm, EditTeamForm
-from .models import School, Team, Player
+from .models import School, Team, Player, Payment
+from .views_payments import div_one_payment, div_two_payment, div_one_sub_payment, div_two_sub_payment
 
 def on_a_team(user):
     '''
@@ -21,14 +24,16 @@ def on_a_team(user):
 
     return on_team
 
+
 def can_join_team(user, school):
     '''
     Checks if <user> can join a team on <school>
     '''
 
     has_email = user.profile.college_email.endswith(school.email_domain)
-    
+
     return has_email and not on_a_team(user)
+
 
 def can_create_team(user, school):
     '''
@@ -39,6 +44,7 @@ def can_create_team(user, school):
     is_captain = Team.objects.filter(captain=user).exists()
 
     return has_email and not is_captain and not on_a_team(user)
+
 
 @login_required
 @csrf_protect
@@ -52,14 +58,20 @@ def manage_team(request, team_id):
 
     try:
         team = Team.objects.get(id=team_id)
-        
+
         # Check if player is on the team
         player = Player.objects.get(user=user, team=team)
 
         # Get roster of the team
         roster = Player.objects.filter(team=team)
         print(roster)
+
+        # Get paid members of the roster
+        paid_members = Player.objects.filter(team=team, has_paid=1)
+        print(paid_members)
+
     except:
+        print('error')
         return redirect('index')
 
     if request.method == 'POST':
@@ -84,12 +96,13 @@ def manage_team(request, team_id):
 
     form = EditTeamForm(instance=team)
 
-    return render(request, 'manage_team.html', {'form': form, 'user': user, 'team': team, 'roster': roster})
+    return render(request, 'manage_team.html', {'form': form, 'user': user, 'team': team, 'roster': roster, 'paid_members': paid_members})
+
 
 def team_pending(request):
     return render(request, 'team_pending.html')
 
-@login_required
+  
 def create_team(request, school_id):
     # Make sure we have a valid school_id
     try:
@@ -123,8 +136,9 @@ def create_team(request, school_id):
             return redirect('team_pending')
     else:
         form = CreateTeamForm(school_id=school_id)
-    
+
     return render(request, 'create_team.html', {'school': school, 'form': form})
+
 
 @login_required
 def join_team(request, school_id):
@@ -163,17 +177,19 @@ def join_team(request, school_id):
 
     return render(request, 'join_team.html', {'school': school, 'form': form})
 
+
 def school_search(request):
     if (request.method == "POST"):
         form = SchoolSearchForm(request.POST)
 
         if (form.is_valid()):
             search_results = watson.filter(School, form.data['query'])
-            return render(request, 'school/search.html', {'form': form, 'results':search_results})
+            return render(request, 'school/search.html', {'form': form, 'results': search_results})
     else:
         form = SchoolSearchForm()
-    
+
     return render(request, 'school/search.html', {'form': form})
+
 
 def school(request, school_id):
     try:
@@ -206,11 +222,53 @@ def school(request, school_id):
         can_join = False
 
     d1team_roster = Player.objects.filter(team=d1team)
-    
+
     return render(request, 'school/school.html', {'team': team, 'can_join': can_join, 'can_create': can_create, 'school': school, 'd1team': d1team, 'd1team_roster': d1team_roster, 'd2teams': d2teams})
+
 
 def hub(request):
     return render(request, 'hub.html')
 
+
 def league(request):
     return render(request, 'league.html')
+
+
+def one_payment(request):
+    return div_one_payment()
+
+
+def two_payment(request):
+    return div_two_payment()
+
+
+def one_sub_payment(request):
+    return div_one_sub_payment()
+
+
+def two_sub_payment(request):
+    return div_two_sub_payment()
+
+
+def payment_return(request):
+    user = User.objects.get(username=request.user)
+    player = Player.objects.get(user=user)
+
+    # ID of the payment. This ID is provided when creating payment.
+    paymentId = request.GET.get('paymentId')
+    payer_id = request.GET.get('PayerID')
+    payment = paypal.Payment.find(paymentId)
+
+    # PayerID is required to approve the payment.
+    if payment.execute({"payer_id": payer_id}):
+        newPayment = Payment(
+            name=request.user, paymentid=paymentId, payerid=payer_id, user=user)
+        newPayment.save()
+        player.has_paid = 1
+        player.save()
+
+        print(paymentId + " " + payer_id)
+        return redirect('index')
+    else:
+        print('error')
+        return redirect('index')
