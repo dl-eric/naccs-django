@@ -82,6 +82,11 @@ def account(request):
                 playerForm.save()
                 return redirect('account')
               
+        if ('leave_team' in request.POST):
+            player.team = None
+            player.save()
+            return redirect('account')
+
     should_invite = False
 
     if (user.profile.faceit and user.profile.discord and user.profile.verified_student):
