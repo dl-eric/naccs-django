@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 import paypalrestsdk as paypal
 from paypalrestsdk import *
 from django.contrib.auth.decorators import login_required
-from .payments import div_one_payment, div_two_payment, div_one_sub_payment, div_two_sub_payment
+from .views_payments import div_one_payment, div_two_payment, div_one_sub_payment, div_two_sub_payment
 from .models import Payment
 
 
@@ -254,7 +254,7 @@ def payment_return(request):
     payment = paypal.Payment.find(paymentId)
 
     # PayerID is required to approve the payment.
-    if payment.execute({"payer_id": payer_id}):  # return True or False
+    if payment.execute({"payer_id": payer_id}):
         newPayment = Payment(
             name=request.user, paymentid=paymentId, payerid=payer_id, user=user)
         newPayment.save()

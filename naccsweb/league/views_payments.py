@@ -3,8 +3,9 @@ import paypalrestsdk as paypal
 from paypalrestsdk import *
 import os
 
+
 paypal.configure({
-    "mode": "sandbox",  # sandbox or live
+    "mode": os.environ.get('PAYPAL_MODE'),  # sandbox or live
     "client_id": os.environ.get('SANDBOX_CLIENT_ID'),
     "client_secret": os.environ.get('SANDBOX_SECRET_ID')})
 
@@ -58,7 +59,7 @@ def div_one_payment():
                 # https://github.com/paypal/rest-api-sdk-python/pull/58
                 redirect_url = str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
-                return redirect(redirect_url)
+                return redirect('one_payment')
     else:
         print("Error while creating payment:")
         print(payment.error)
@@ -76,8 +77,8 @@ def div_two_payment():
 
             # Redirect URLs
             "redirect_urls": {
-                "return_url": "http://localhost:8000/payment_return?success=true",
-                "cancel_url": "http://localhost:8000/payment_return?cancel=true"},
+                "return_url": "http://collegiatecounterstrike.com/payment_return?success=true",
+                "cancel_url": "http://collegiatecounterstrike.com/payment_return?cancel=true"},
 
             # Transaction
             # A transaction defines the contract of a
@@ -111,7 +112,7 @@ def div_two_payment():
                     # https://github.com/paypal/rest-api-sdk-python/pull/58
                 redirect_url = str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
-                return redirect(redirect_url)
+                return redirect('index')
     else:
         print("Error while creating payment:")
         print(payment.error)
@@ -129,8 +130,8 @@ def div_one_sub_payment():
 
             # Redirect URLs
             "redirect_urls": {
-                "return_url": "http://localhost:8000/payment_return?success=true",
-                "cancel_url": "http://localhost:8000/payment_return?cancel=true"},
+                "return_url": "http://collegiatecounterstrike.com/payment_return?success=true",
+                "cancel_url": "http://collegiatecounterstrike.com/payment_return?cancel=true"},
 
             # Transaction
             # A transaction defines the contract of a
@@ -164,7 +165,7 @@ def div_one_sub_payment():
                     # https://github.com/paypal/rest-api-sdk-python/pull/58
                 redirect_url = str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
-                return redirect(redirect_url)
+                return redirect('index')
     else:
         print("Error while creating payment:")
         print(payment.error)
@@ -182,8 +183,8 @@ def div_two_sub_payment():
 
             # Redirect URLs
             "redirect_urls": {
-                "return_url": "http://localhost:8000/payment_return?success=true",
-                "cancel_url": "http://localhost:8000/payment_return?cancel=true"},
+                "return_url": "http://collegiatecounterstrike.com/payment_return?success=true",
+                "cancel_url": "http://collegiatecounterstrike.com/payment_return?cancel=true"},
 
             # Transaction
             # A transaction defines the contract of a
@@ -217,7 +218,7 @@ def div_two_sub_payment():
                     # https://github.com/paypal/rest-api-sdk-python/pull/58
                 redirect_url = str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
-                return redirect(redirect_url)
+                return redirect('index')
     else:
         print("Error while creating payment:")
         print(payment.error)
