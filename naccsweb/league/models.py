@@ -38,4 +38,4 @@ class Player(models.Model):
     role = models.CharField(max_length=12, blank=True)
     has_paid = models.BooleanField(default=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    team = models.OneToOneField(Team, on_delete=models.SET_NULL, null=True)
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)

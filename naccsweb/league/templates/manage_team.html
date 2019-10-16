@@ -11,18 +11,23 @@
         <p><strong>{{ team.school.name }}</strong></p>
 
         <form action="" method="post">
+        {% csrf_token %}
         {{ form.as_p }}
-        <input class="button" type="submit" value="Change">
+        <input class="button" type="submit" value="Change" name="team_info">
         </form>
 
         <h1 class="title">Roster</h1>
         <div class="manage_players">
+            <form action="" method="post">
+            {% csrf_token %}
+            
             {% for player in roster %}
             <div class="player">
                 {{ player.user.profile.nickname }}
                 <div class="player_buttons">
+                    {% csrf_token %}
                     {% if not player.user == user %}
-                    <a class="btn kick_btn" href="#">Kick</a>
+                    <input class="btn kick_btn" value="Kick" type="submit", name="{{ player.user.profile.nickname }}">
                     {% endif %}
                     {% if player.has_paid %}
                     Paid!
@@ -33,6 +38,7 @@
             </div>
                 
             {% endfor %}
+            </form>
         </div>
     </section>
 </div>

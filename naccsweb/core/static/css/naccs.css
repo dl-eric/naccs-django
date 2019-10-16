@@ -811,7 +811,7 @@ textarea {
     width: inherit;
 }
 
-.manage_players > .player {
+.manage_players .player {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -824,6 +824,7 @@ textarea {
 .btn {
     border-radius: 4px;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .kick_btn {
@@ -831,4 +832,6 @@ textarea {
     color: white;
     padding: 10px;
     margin: 0 10px;
+    width: 80px;
+    min-width: auto;
 }

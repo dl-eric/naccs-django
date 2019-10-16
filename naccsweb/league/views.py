@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
 
 from watson import search as watson
 
@@ -15,7 +16,6 @@ def on_a_team(user):
     try:
         player = Player.objects.get(user=user)
         on_team = player.team != None
-        print("on team", on_team)
     except:
         on_team = False
 
@@ -41,6 +41,12 @@ def can_create_team(user, school):
     return has_email and not is_captain and not on_a_team(user)
 
 @login_required
+@csrf_protect
+def kick_user(request):
+    next = request.POST.get('next', '/')
+    return redirect(next)
+
+@login_required
 def manage_team(request, team_id):
     user = User.objects.get(username=request.user)
 
@@ -56,28 +62,32 @@ def manage_team(request, team_id):
     except:
         return redirect('index')
 
+    if request.method == 'POST':
+        print(request.POST)
+        if ('team_info' in request.POST):
+            form = EditTeamForm(request.POST, instance=team)
+            if form.is_valid():
+                form.save()
+        else:
+            # They want to kick a player.
+            for name in request.POST:
+                if name == 'csrfmiddlewaretoken':
+                    continue
+                
+                try:
+                    delete_user = User.objects.get(username=name)
+                    to_delete = Player.objects.get(user=delete_user)
+                    to_delete.team = None
+                    to_delete.save()
+                except:
+                    print("Unable to delete user", name)
+
     form = EditTeamForm(instance=team)
 
     return render(request, 'manage_team.html', {'form': form, 'user': user, 'team': team, 'roster': roster})
 
 def team_pending(request):
     return render(request, 'team_pending.html')
-
-@login_required
-def team_settings(request):
-    user = User.objects.get(username=request.user)
-
-    try:
-        player = Player.objects.get(user=user)
-        if player.team == None:
-            redirect('index')
-    except:
-        redirect('index')
-
-    team = player.team
-    is_captain = team.captain == user
-
-    return render(request, 'team.html')
 
 @login_required
 def create_team(request, school_id):
@@ -141,11 +151,12 @@ def join_team(request, school_id):
             try:
                 player = Player.objects.get(user=user)
                 player.team = team
+                player.save()
             except:
                 # Player doesn't exist
                 player = Player.objects.create(user=user, team=team)
 
-            return redirect('team_settings')
+            return redirect('school', school_id)
     
     else:
         form = JoinTeamForm(teams=teams)
