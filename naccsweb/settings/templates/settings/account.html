@@ -110,6 +110,11 @@
                     {{ playerForm.as_p }}
                     <input class="button" type="submit" value="Update" name="team">
                 </form>
+
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input class="button" type="submit" value="Leave Team" name="leave_team">
+                </form>
             </section>
         </section>
     </section>
