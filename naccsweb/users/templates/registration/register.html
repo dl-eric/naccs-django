@@ -2,18 +2,18 @@
 
 {% block title %}Sign Up{% endblock %}
 
-{% block jumbo_title %}SIGN UP{% endblock %}
-
 {% block content %}
 <section class="content">
-    <section class="panel">    
-        <h1 class="title">Sign Up</h1>
-        <div class="underline"></div>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="ghost_button" type="submit">Register</button>
-        </form>
-    </section>
+    <div class="sole_object">
+        <section class="panel">    
+            <h1 class="title">Sign Up</h1>
+            <div class="underline"></div>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="ghost_button" type="submit">Register</button>
+            </form>
+        </section>
+    </div>
 </section>
 {% endblock %}

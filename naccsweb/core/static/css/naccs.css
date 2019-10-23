@@ -50,6 +50,7 @@ nav #logo {
     border-radius: 10px;
     box-shadow: 0px 0px 12px #333;
 }
+
 nav #logo img {
     /* Get rid of leading text due to inline */
     display: block;
@@ -289,10 +290,15 @@ background-color: #ddd;
     font-size: 14px;
 }
 
-#queues {
+.flex_row {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-evenly;
+}
+
+.flex_row > li {
+    min-width: 100px;
 }
 
 #partners_bg { 
@@ -348,7 +354,7 @@ background-color: #ddd;
 .panel .body {
     background-color: white;
     width: 100%;
-    padding: 2px 10px 8px 10px;
+    padding: 10px 10px 8px 10px;
     box-shadow: 0 0 20px 4px #dedede;
     color: black;
 }
@@ -375,12 +381,13 @@ background-color: #ddd;
 }
 
 .panel .body_content {
-    min-height: 150px;
+    min-height: 100px;
     margin: 10px;
-    font-size: 12px;
+    font-size: 18px;
 }
 
 .panel_button {
+    font-size: 12px;
     cursor: pointer;
     display: block;
     width: 100px;
@@ -399,6 +406,10 @@ background-color: #ddd;
 
 .panel form {
     margin: 20px 0 20px 0;
+}
+
+.center_text {
+    text-align: center;
 }
 
 form .button, form .ghost_button {
@@ -599,10 +610,16 @@ textarea {
 
 .player > .name {
     font-size: 24px;
+    flex-basis: 40%;
 }
 
 .player > .college {
     font-size: 20px;
+}
+
+.player > .division {
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .result_wrapper {
@@ -889,4 +906,11 @@ textarea {
     cursor: pointer;
     color: black;
     font-style: bold;
+}
+
+.help_img {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    border: 2px solid gray;
 }

@@ -26,7 +26,8 @@
             <div class="name">
                 <a href="/users/{{ player.user.username }}">{{ player.user.profile.nickname }}</a>
             </div>
-            <div class="college">{{ player.college }}</div>
+            <div class="division">{{ player.team.division }}</div>
+            <div class="college">{{ player.user.profile.college }}</div>
         </div>
         {% endfor %}
     {% else %}
