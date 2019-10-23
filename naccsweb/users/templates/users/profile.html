@@ -5,8 +5,8 @@
 
 {% block content %}
 <section id="player_banner">
-    {% if player.profile.picture %}
-        <img id="player_img" src="{% get_media_prefix %}{{ user.profile.picture }}">
+    {% if player.user.profile.picture %}
+        <img id="player_img" src="{% get_media_prefix %}{{ player.user.profile.picture }}">
     {% else %}
         <img id="player_img" src="{% static 'assets/silhouette.png' %}">
     {% endif %}
