@@ -11,7 +11,7 @@ from .schools import get_schools
 from .forms import CollegeForm, GraduateForm, HighSchoolForm, EditProfileForm, EditUserForm, PlayerForm
 from .email import email_college_confirmation, check_token
 from .models import GraduateFormModel, HighSchoolFormModel
-from league.views_payments import get_payment_items, check_ready, needs_to_pay
+from league.payment_utils import get_payment_items, check_ready, needs_to_pay
 
 def verify(request, uidb64, token):
     try:

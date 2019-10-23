@@ -864,3 +864,18 @@ textarea {
     grid-column: 1/4;
     justify-self: center;
 }
+
+.paypal_button {
+    display: block;
+    text-align: center;
+    line-height: 35px;
+    background-color: #ffc439;
+    border-radius: 18px;
+    height: 35px;
+    min-width: 250px;
+    width: 250px;
+    padding: 0;
+    cursor: pointer;
+    color: black;
+    font-style: bold;
+}

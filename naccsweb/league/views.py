@@ -6,10 +6,11 @@ from django.http import HttpResponseServerError
 from django.utils import timezone
 
 from watson import search as watson
+import logging
 
 from .forms import SchoolSearchForm, CreateTeamForm, JoinTeamForm, EditTeamForm
 from .models import School, Team, Player, Payment
-from .views_payments import check_ready, create_itemized_payment, get_payment_items
+from .payment_utils import check_ready, create_itemized_payment, get_payment_items, needs_to_pay
 
 def on_a_team(user):
     '''
@@ -54,10 +55,17 @@ def manage_team(request, team_id):
         team = Team.objects.get(id=team_id)
 
         # Check if player is on the team
-        player = Player.objects.get(user=user, team=team)
+        Player.objects.get(user=user, team=team)
 
         # Get roster of the team
-        roster = Player.objects.filter(team=team)
+        roster = Player.objects.filter(team=team).order_by('-amount_paid')
+
+        # Check if any players need to pay
+        create_payment_button = False
+        for player in roster:
+            if needs_to_pay(player):
+                create_payment_button = True
+                break
 
     except:
         return redirect('index')
@@ -92,26 +100,24 @@ def manage_team(request, team_id):
                         return redirect(redirect_url)
 
             else:
+                logging.error("Bulk payment failed!", exc_info=True)
                 print("Error while creating payment:")
                 print(payment.error)
                 return HttpResponseServerError()
-        else:
+        elif 'kick' in request.POST:
             # They want to kick a player.
-            for name in request.POST:
-                if name == 'csrfmiddlewaretoken':
-                    continue
-                
-                try:
-                    delete_user = User.objects.get(username=name)
-                    to_delete = Player.objects.get(user=delete_user)
-                    to_delete.team = None
-                    to_delete.save()
-                except:
-                    print("Unable to delete user", name)
+            name = request.POST.get('kick')
+            try:
+                delete_user = User.objects.get(username=name)
+                to_delete = Player.objects.get(user=delete_user)
+                to_delete.team = None
+                to_delete.save()
+            except:
+                print("Unable to delete user", name)
 
     form = EditTeamForm(instance=team)
 
-    return render(request, 'manage_team.html', {'form': form, 'user': user, 'team': team, 'roster': roster})
+    return render(request, 'manage_team.html', {'create_payment_button': create_payment_button, 'form': form, 'user': user, 'team': team, 'roster': roster})
 
 
 def team_pending(request):

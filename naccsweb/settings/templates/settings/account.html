@@ -121,13 +121,16 @@
                 {% endif %}
 
                 {% if needs_to_pay %}
-                <a href="/pay_fee">Pay Fee</a>
+                <a class="paypal_button" href="/pay_fee">Pay with PayPal</a>
                 {% endif %}
             </section>
         </section>
     </section>
     {% endif %}
 </div>
+
+<!-- Include the PayPal JavaScript SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
 <script src="https://cdn.faceit.com/oauth/faceit-oauth-sdk-1.2.7.min.js" type="text/javascript"></script>
 <script type="text/javascript">
     var initParams = {

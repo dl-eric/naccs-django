@@ -32,19 +32,23 @@
                         {% endif %}
                     {% else %}
                         {% if player.amount_paid < player.team.division.sub_fee %}
+                        <input class="check_box" type="checkbox" name="pay_checkbox" value="{{ player.user.username }}"></player.team.division.sub_fee>
                         Pay
                         {% endif %}
                     {% endif %}
 
                     {% if not player.user == user %}
-                    <input class="btn kick_btn" value="Kick" type="submit" name="{{ player.user.profile.nickname }}">
+                    <input class="btn kick_btn" value="Kick" type="submit">
+                    <input type="hidden" value="{{ player.user.username }}" name="kick">
                     {% else %}
                     <input class="btn kick_btn" value="Kick" type="button" disabled>
                     {% endif %}
                 </div>
             </div>
             {% endfor %}
-            <input class="ghost_button" value="Pay" type="submit" name="pay">
+            {% if create_payment_button %}
+            <input style="float: right" class="paypal_button" value="Pay" type="submit" name="pay">
+            {% endif %}
             </form>
         </div>
     </section>
