@@ -2,6 +2,7 @@ import requests
 import os   
 import base64
 import json
+import logging
 
 DISCORD_ENDPOINT = 'https://discordapp.com/api'
 DISCORD_TOKEN_URL = DISCORD_ENDPOINT + '/oauth2/token'
@@ -81,6 +82,8 @@ def get_collegiate_invite():
     if response.get('code') and response.get('code') == 'OPERATION-OK':
         code = response.get('payload').get('code')
         return code
+    
+    logging.error("Failed to get invite", exc_info=True)
     return None
 
 def get_invite_link(code):
