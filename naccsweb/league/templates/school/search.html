@@ -18,7 +18,11 @@
     </div>
     
     <div class="info"><i class="fa fa-info-circle" aria-hidden="true"></i> Don't see your school? Apply to join NACCS through this form <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=qQyI-I6L8E65Jpw7Kv-yl0u3fJXirJ5Kqx2o52LDsaRURVZKQTZWVU1VUUdGQ0NYRFc0NVBPWEVDSS4u">here</a>.</div>
-    {% if results %}
+    {% if results == None %}
+        <div class="sole_text">
+            Search current schools competing in NACCS
+        </div>
+    {% else %}
         <div class="result_wrapper">
         {% for school in results %}
         <a class="school_result_link" href="{{ request.path }}{{ school.id }}">
@@ -33,10 +37,6 @@
             </div>
         </a>
         {% endfor %}    
-        </div>
-    {% else %}
-        <div class="sole_text">
-            Search current schools competing in NACCS
         </div>
     {% endif %}
 </div>

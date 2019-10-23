@@ -208,6 +208,7 @@ def school_search(request):
 
         if (form.is_valid()):
             search_results = watson.filter(School, form.data['query'])
+            print (search_results)
             return render(request, 'school/search.html', {'form': form, 'results': search_results})
     else:
         form = SchoolSearchForm()

@@ -624,7 +624,7 @@ textarea {
 
 .result_wrapper {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     flex-wrap: wrap;
 }
 
@@ -913,4 +913,8 @@ textarea {
     width: 150px;
     border-radius: 50%;
     border: 2px solid gray;
+}
+
+.info > a {
+    color: white;
 }
