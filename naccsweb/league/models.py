@@ -26,8 +26,8 @@ class Division(models.Model):
         return self.name
 
     name = models.CharField(max_length=32)
-    fee = models.IntegerField(default=0)
-    sub_fee = models.IntegerField(default=0)
+    fee = models.FloatField(default=0)
+    sub_fee = models.FloatField(default=0)
 
 class Team(models.Model):
     def __str__(self):
