@@ -6,17 +6,34 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 
-from .forms import RegisterForm
+from watson import search as watson
+
+from .forms import RegisterForm, PlayerSearchForm
 from .tokens import account_activation_token
+from users.models import Profile
+from league.models import Player
+
+def profile_search(request):
+    if (request.method == "POST"):
+        form = PlayerSearchForm(request.POST)
+
+        if (form.is_valid()):
+            search_results = watson.filter(Player, form.data['query'])
+            return render(request, 'users/search.html', {'form': form, 'results':search_results})
+    else:
+        form = PlayerSearchForm()
+    
+    return render(request, 'users/search.html', {'form': form})
 
 # User profile view
 def profile(request, page_alias):
     try:
         user = User.objects.get(username=page_alias)
+        player = Player.objects.get(user=user)
     except:
-        return redirect('/notfound')
+        return redirect('not_found')
 
-    profile = {'profile': user}
+    profile = {'player': player}
     return render(request, 'users/profile.html', context=profile)
 
 # Register view

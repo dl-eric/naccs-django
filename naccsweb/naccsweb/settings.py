@@ -11,7 +11,13 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
+sentry_sdk.init(
+        dsn="https://4aa63e7f917a4de28df9af3ae482eaf2@sentry.io/1781235",
+        integrations=[DjangoIntegration()]
+)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +27,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET', '4cEyK87ncSGPHPGdYCD8EPX%d$@5U^Yh6P0sw8qvkQuoL3&L@TWhgM%cs5')
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET', '4cEyK87ncSGPHPGdYCD8EPX%d$@5U^Yh6P0sw8qvkQuoL3&L@TWhgM%cs5')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
@@ -34,6 +41,8 @@ ALLOWED_HOSTS = ['192.168.254.25', 'localhost', '192.168.254.34']
 # Application definition
 
 INSTALLED_APPS = [
+    'watson',
+    'league.apps.LeagueConfig',
     'settings.apps.SettingsConfig',
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
@@ -124,18 +133,16 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-
-STATIC_URL = '/static/'
-
 LOGIN_URL = '/login'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-if not DEBUG:
+DJANGO_USE_S3 = os.environ.get('DJANGO_USE_S3', False)
+
+if DJANGO_USE_S3:
+    print("Using S3")
+    # AWS Settings
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_BUCKET_NAME')
@@ -143,21 +150,29 @@ if not DEBUG:
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
+    AWS_DEFAULT_ACL = 'public-read'
+
+    # Static Location
     AWS_STATIC_LOCATION = 'static'
     STATICFILES_STORAGE = 'naccsweb.storage_backends.StaticStorage'
     STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
+
+    # Public Media
     AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
+    MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN,
+                                    AWS_PUBLIC_MEDIA_LOCATION)
     DEFAULT_FILE_STORAGE = 'naccsweb.storage_backends.PublicMediaStorage'
+
+    # Private Media
     AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
     PRIVATE_FILE_STORAGE = 'naccsweb.storage_backends.PrivateMediaStorage'
-    AWS_DEFAULT_ACL = 'public-read'
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 else:
+    AWS_DEFAULT_ACL = None
     STATIC_ROOT = os.path.join(BASE_DIR, '../staticfiles/')
     STATIC_URL = '/static/'
     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
     MEDIA_URL = '/files/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, '/files/')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.com'
@@ -175,3 +190,15 @@ if os.environ.get('DJANGO_SECURE'):
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+
+PAYPAL_MODE = os.environ.get('PAYPAL_MODE')
+
+if(PAYPAL_MODE == "live"):
+    PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
+    CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+elif(PAYPAL_MODE == "sandbox"):
+    PAYPAL_CLIENT_ID = os.environ.get('SANDBOX_CLIENT_ID')
+    CLIENT_SECRET = os.environ.get('SANDBOX_SECRET_ID')
+else:
+    PAYPAL_CLIENT_ID = None
+    CLIENT_SECRET = None

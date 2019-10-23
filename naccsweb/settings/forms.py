@@ -1,10 +1,19 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_image_file_extension
+from django.contrib.auth.models import User
 from users.models import Profile
+
+from league.models import Player
 
 from .models import GraduateFormModel, HighSchoolFormModel
 from .schools import get_schools
 
+
+class PlayerForm(forms.ModelForm):
+    class Meta:
+        model = Player
+        exclude = ['amount_paid', 'user', 'team']
 
 class CollegeForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -71,15 +80,21 @@ class HighSchoolForm(forms.ModelForm):
                             }),
                             required=False)
 
-
-class EditProfileForm(forms.Form):
+class EditUserForm(forms.ModelForm):
     class Meta:
-        fields = ('first_name', 'last_name', 'bio')
+        model = User
+        fields = ('first_name', 'last_name')
 
     first_name = forms.CharField(label="First Name", required=False)
     last_name = forms.CharField(label="Last Name", required=False)
-    bio = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 40}), required=False)
 
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('bio', 'picture')
+
+    bio = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 60}), required=False)
+    picture = forms.ImageField(label="Player headshot (200x200px)", required=False)
 
 class MilitaryForm(forms.Form):
     # TODO

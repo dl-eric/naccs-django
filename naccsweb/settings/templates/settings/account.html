@@ -1,32 +1,44 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %}Account Settings{% endblock %}
 
-{% block jumbo_title %}ACCOUNT SETTINGS{% endblock %}
-
 {% block content %}
 <div class="content">
+    <h1 id="plain_header">Account Settings</h1>
     <section id="account_settings">
         <section id="main">
             <section class="panel">
                 <h1 class="title">Personal Info</h1>
-                <div class="underline"></div>
-                <p>Email: {{ user.email }}</p>
+                <!-- <div class="underline"></div> -->
+                <p><strong>Email: {{ user.email }}</strong></p>
                 <form action="" method="post" enctype="multipart/form-data" name="update">
                     {% csrf_token %}
-                    {{ profileForm.as_p }}
-                    <input class="ghost_button" type="submit" value="Update Profile" name="update">
+                    {{ userForm.as_p }}
+                    <p>
+                        {{ profileForm.bio.label_tag}}
+                        {{ profileForm.bio }}
+                    </p>
+                    {{ profileForm.picture.errors }}
+                    <p>Player Headshot:</p>
+                    {% if user.profile.picture %}
+                    <p>
+                        <img id="settings_picture" src="{% get_media_prefix %}{{ profileForm.picture.value }}">
+                    </p>
+                    {% endif %}
+                    <p>{{ profileForm.picture }}</p>
+                    <input class="button" type="submit" value="Update Profile" name="update">
                 </form>
             </section>
 
             <section class="panel">
-                <h1 class="title">College Info</h1>
-                <div class="underline"></div>
+                <h1 class="title">College Info {% if not user.profile.college %}<i class="fa fa-times-circle"></i>{% endif %}</h1>
+                <!-- <div class="underline"></div> -->
                 {% if user.profile.college %}
                 <p>{{ user.profile.college }}</p>
                 {{ user.profile.college_email }}
                 {% if not user.profile.verified_student %}
-                <i class="fa fa-times-circle"></i> <form action="" method="post">{% csrf_token %}<input class="ghost_button" type="submit" name="resend" value="Resend"></form>
+                <i class="fa fa-times-circle"></i> <form action="" method="post">{% csrf_token %}<input class="button" type="submit" name="resend" value="Resend"></form>
                 {% else %}
                 <i class="fa fa-check-circle"></i>
                 {% endif %}
@@ -34,18 +46,18 @@
                 <form action="" method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <input class="ghost_button" type="submit" name="college_info" value="Save" name="email">
+                    <input class="button" type="submit" name="college_info" value="Save" name="email">
                     <a class="not_college_button" href="account/application">Not a current student?</a>
                 </form>
                 {% endif %}
             </section>
             <section class="panel">
                 <h1 class="title">Collegiate Hub</h1>
-                <div class="underline"></div>
+                <!-- <div class="underline"></div> -->
                 {% if should_invite %}
                     {% if not invite %}
                     <br>
-                    <a target="_blank" class="ghost_button invite_btn" href="{% url 'generate_collegiate' %}">
+                    <a target="_blank" class="button invite_btn" href="{% url 'generate_collegiate' %}">
                     Generate Invite Link
                     </a>
                     {% else %}
@@ -53,37 +65,72 @@
                     {% endif %}
                 {% else %}
                     <p>You must link your Discord, FACEIT, and verify your college credentials before we can invite you to our hub!</p>
-                    <a target="_blank" class="ghost_button invite_btn" disabled>
+                    <a target="_blank" class="button invite_btn" disabled>
                     Generate Invite Link
                     </a>    
                 {% endif %}
             </section>
         </section>
         <section id="sidebar">
-                <section class="panel">
-                    <h1 class="title">FACEIT <i class="fa fa-{% if user.profile.faceit %}check{% else %}times{% endif %}-circle"></i></h1>
-                    <div class="underline"></div>
+            <section class="panel">
+                <h1 class="title">FACEIT <i class="fa fa-{% if user.profile.faceit %}check{% else %}times{% endif %}-circle"></i></h1>
+                <!-- <div class="underline"></div> -->
+                <article class="body">
                     {% if user.profile.faceit != "" %}
                     <p>Username: {{ user.profile.faceit }}</p>
-                    <a href="#" class="button Faceit" onclick="FACEIT.loginWithFaceit()">Refresh</a>
+                    <a href="#" onclick="FACEIT.loginWithFaceit()">Change</a>
                     {% else %}
-                    <a href="#" class="button Faceit" onclick="FACEIT.loginWithFaceit()">Login With Faceit</a>
+                    <a href="#" onclick="FACEIT.loginWithFaceit()">Login With Faceit</a>
                     {% endif %}
-                </section>
-                <section class="panel">
-                    <h1 class="title">Discord <i class="fa fa-{% if user.profile.discord %}check{% else %}times{% endif %}-circle"></i></h1>
-                    <div class="underline"></div>
+                </article>
+            </section>
+            <section class="panel">
+                <h1 class="title">Discord <i class="fa fa-{% if user.profile.discord %}check{% else %}times{% endif %}-circle"></i></h1>
+                <!-- <div class="underline"></div> -->
+                <article class="body">
                     {% if user.profile.discord != "" %}
                     <p>Username: {{ user.profile.discord }}</p>
-                    <a href='https://discordapp.com/api/oauth2/authorize?client_id=610627028479246338&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsettings%2Faccount%2Fdiscordcallback&response_type=code&scope=identify'>Refresh</a>
+                    <a href='https://discordapp.com/api/oauth2/authorize?client_id=610627028479246338&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsettings%2Faccount%2Fdiscordcallback&response_type=code&scope=identify'>Change</a>
                     {% else %}
                     <a href='https://discordapp.com/api/oauth2/authorize?client_id=610627028479246338&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsettings%2Faccount%2Fdiscordcallback&response_type=code&scope=identify'>Login with Discord</a>
                     {% endif %}
-                </section>
+                </article>
+            </section>
         </section>
     </section>
+    <hr>
+    {% if player.team %}
+    <section id="account_settings">
+        <section id="main">
+            <section class="panel">
+                <h1 class="title">League Team Settings</h1>
+                <p><strong>Team: {{ player.team.name }}</strong></p>
+                <form action="" method="post" name="team">
+                    {% csrf_token %}
+                    {{ playerForm.as_p }}
+                    <input class="button" type="submit" value="Update" name="team">
+                </form>
 
+                {% if player.team.captain != user %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input class="button" type="submit" value="Leave Team" name="leave_team">
+                </form>
+                {% else %}
+                <p><em>Team captains can't leave their teams. Contact NACCS to change captains.</em></p>
+                {% endif %}
+
+                {% if needs_to_pay %}
+                <a class="paypal_button" href="/pay_fee">Pay with PayPal</a>
+                {% endif %}
+            </section>
+        </section>
+    </section>
+    {% endif %}
 </div>
+
+<!-- Include the PayPal JavaScript SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
 <script src="https://cdn.faceit.com/oauth/faceit-oauth-sdk-1.2.7.min.js" type="text/javascript"></script>
 <script type="text/javascript">
     var initParams = {

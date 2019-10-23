@@ -1,33 +1,39 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %}Profile{% endblock %}
 
-{% block jumbo_title %}{{ profile.profile.nickname }}{% endblock %}
-
 {% block content %}
-<div class="content">   
-    {{ profile.profile.nickname }}
-    {{ profile.first_name }}
-    {{ profile.last_name }}
-    {{ profile.profile.bio }}
-    <section class="panel">
-        <h1 class="title">
-            School
-        </h1>
-        <div class="underline"></div>
-        {{ profile.profile.college }}
+<section id="player_banner">
+    {% if player.profile.picture %}
+        <img id="player_img" src="{% get_media_prefix %}{{ user.profile.picture }}">
+    {% else %}
+        <img id="player_img" src="{% static 'assets/silhouette.png' %}">
+    {% endif %}
+    <section id="player_info">
+        <div id="nickname">{{ player.user.profile.nickname }}</div>
+        <div id="full_name">{{ player.user.first_name }} {{ player.user.last_name }}</div>
+        <div id="school">{{ player.user.profile.college }}</div>
+        <div id="division">{{ player.team.division.name }}</div>
     </section>
-    <section class="panel">
-        <h1 class="title">
-            Team
-        </h1>
-        <div class="underline"></div>
+</section>
+<div class="content">
+    <section class="profile_section">
+        <div class="title">
+            BIO
+        </div>
+        <div class="body">
+            {{ player.user.profile.bio }}
+        </div>
     </section>
-    <section class="panel">
-        <h1 class="title">
-            Hub Stats
-        </h1>
-        <div class="underline"></div>
+
+    <section class="profile_section">
+        <div class="title">
+            STATS
+        </div>
+        <div class="body">
+            ...
+        </div>
     </section>
 </div>
 {% endblock %}

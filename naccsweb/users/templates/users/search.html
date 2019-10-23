@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+{% load watson %}
+
+{% block title %}Search Players{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="header_flex"> 
+        <h1 id="plain_header">PLAYERS</h1>
+        <div class="header_search">
+            <form action="" method="post">
+                {% csrf_token %}
+                <label for="search_button"><i class="search_icon fa fa-search" aria-hidden="true"></i></label> <input id="search_button" class="hidden" type="submit" value="" >
+                {{ form.query }}
+            </form>
+        </div>
+    </div>
+    
+    {% if results %}
+        <div class="search_result player">
+            <div class="name">Nickname</div>
+            <div class="college">College</div>
+        </div>
+        {% for player in results %}
+        <div class="search_result player">
+            <div class="name">
+                <a href="/users/{{ player.user.username }}">{{ player.user.profile.nickname }}</a>
+            </div>
+            <div class="division">{{ player.team.division }}</div>
+            <div class="college">{{ player.user.profile.college }}</div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="sole_text">
+            Search collegiate players currently playing in NACCS League
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

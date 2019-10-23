@@ -4,12 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 
+from league.models import Player
+
 from .oauth import get_discord_name, get_faceit_name, get_collegiate_invite, get_invite_link
 from .schools import get_schools
-from .forms import CollegeForm, GraduateForm, HighSchoolForm, EditProfileForm
+from .forms import CollegeForm, GraduateForm, HighSchoolForm, EditProfileForm, EditUserForm, PlayerForm
 from .email import email_college_confirmation, check_token
 from .models import GraduateFormModel, HighSchoolFormModel
-
+from league.payment_utils import get_payment_items, check_ready, needs_to_pay
 
 def verify(request, uidb64, token):
     try:
@@ -33,8 +35,19 @@ def account(request):
         schools = []
 
     form = CollegeForm(schools=schools)
-    profileForm = EditProfileForm()
+    user = User.objects.get(username=request.user.username)
+    userForm = EditUserForm(instance=user)
+    profileForm = EditProfileForm(instance=user.profile)
 
+    try:
+        player = Player.objects.get(user=user)
+        playerForm = PlayerForm(instance=player)
+        has_to_pay = needs_to_pay(player)
+    except:
+        player = None
+        playerForm = None
+        has_to_pay = False
+    
     if request.method == 'POST':
         # Check if resend was hit
         if ('resend' in request.POST):
@@ -56,17 +69,30 @@ def account(request):
                 return redirect('pending')
 
         if ('update' in request.POST):
-            profileForm = EditProfileForm(request.POST,
-                                          initial={'bio': 'asdas'})
-            if profileForm.is_valid():
-                user = User.objects.get(username=request.user.username)
-                user.profile.bio = profileForm['bio'].value()
-                user.first_name = profileForm['first_name'].value()
-                user.last_name = profileForm['last_name'].value()
-                user.save()
+            userForm = EditUserForm(request.POST, instance=user)
+            profileForm = EditProfileForm(request.POST, request.FILES,
+                                          instance=user.profile)
+            if profileForm.is_valid() and userForm.is_valid():
+                profileForm.save()
+                userForm.save()
+                return redirect('account')
+
+        if ('team' in request.POST):
+            playerForm = PlayerForm(request.POST, instance=player)
+
+            if playerForm.is_valid():
+                playerForm.save()
                 return redirect('account')
               
-    user = User.objects.get(username=request.user.username)
+        if ('leave_team' in request.POST):
+            team = player.team
+            player.team = None
+            player.save()
+
+            # Check if the team is ready without this player
+            check_ready(team)
+            return redirect('account')
+
     should_invite = False
 
     if (user.profile.faceit and user.profile.discord and user.profile.verified_student):
@@ -77,14 +103,7 @@ def account(request):
     else:
         invite_link = None
 
-    profileForm = EditProfileForm(
-        initial={
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'bio': user.profile.bio
-        })
-
-    return render(request, 'settings/account.html', {'form': form, 'profileForm': profileForm, 'invite': invite_link, 'should_invite': should_invite})
+    return render(request, 'settings/account.html', {'needs_to_pay': has_to_pay, 'playerForm': playerForm, 'player': player, 'form': form, 'profileForm': profileForm, 'userForm': userForm, 'invite': invite_link, 'should_invite': should_invite})
 
 @login_required
 def pending(request):

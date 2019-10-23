@@ -21,7 +21,8 @@ class Profile(models.Model):
     discord = models.CharField(max_length=32, blank=True)
     faceit = models.CharField(max_length=32, blank=True)
     collegiate_hub_invite = models.CharField(max_length=8, blank=True)
-    picture = models.FileField(upload_to=get_file_path, null=True, blank=True)
+    birth_date = models.DateField(null=True, blank=True)
+    picture = models.ImageField(upload_to=get_file_path, null=True, blank=True)
 
 
 @receiver(post_save, sender=User)

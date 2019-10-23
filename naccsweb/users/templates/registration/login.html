@@ -2,19 +2,18 @@
 
 {% block title %}Login{% endblock %}
 
-{% block jumbo_title %}LOGIN{% endblock %}
-
 {% block content %}
 <section class="content">
-  <section class="panel">    
-    <h1 class="title">Login</h1>
-    <div class="underline"></div>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button class="ghost_button" type="submit">Login</button>
-      <p><a href="{% url 'password_reset' %}">Reset Password</a></p>
-    </form>
-  </section>
+  <div class="sole_object">
+    <section class="panel">    
+      <h1 class="title">Login</h1>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="button" type="submit" value="Login"></input>
+        <p><a href="{% url 'password_reset' %}">Reset Password</a></p>
+      </form>
+    </section>
+  </div>
 </section>
 {% endblock %}

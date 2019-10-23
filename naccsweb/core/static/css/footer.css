@@ -1,5 +1,5 @@
 #footer {
-    background-color: #0C2132;
+    background-color: #363a42;
     height: 200px;
     text-align: center;
     padding: 20px;
@@ -20,7 +20,7 @@
     cursor: pointer;
 }
 .social_container > a:hover{
-    color: #F65A44;
+    color: #5e7aac;
 }
 
 .fa-discord {

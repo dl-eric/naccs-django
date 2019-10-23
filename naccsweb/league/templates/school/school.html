@@ -1,0 +1,88 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ school.name }}{% endblock %}
+
+{% block content %}
+<section class="jumbotron school_jumbo" style="background-color: #{{ school.main_color }};">
+    <img src="{{ school.picture.url }}">
+    <section class="jumbo_row">
+        <div class="jumbo_row_element">
+            <div class="location">{{ school.city }}, {{ school.state }}</div>
+            <h3>LOCATION</h3>
+        </div>
+
+        <div class="jumbo_row_element">
+            <div class="name">{{ school.name }}</div>
+            <h3>SCHOOL</h3>
+        </div>
+
+        <div class="jumbo_row_element">
+            <div class="rank">{{ school.rank }}</div>
+            <h3>D1 RANK</h3>
+        </div>
+    </section>
+</section>
+<div class="content">
+    <section class="division">
+        <div class="header">
+            <h1>Division I</h1> {% if d1team %}<h2>{{ d1team.name }}</h2>{% endif %}
+        </div>
+        <section class="roster">
+            {% if d1team %}
+                {% if d1team.is_active %}
+                {% for player in d1team_roster %}
+                <article class="player">
+                    <div class="player_info">
+                        <div class="role">{{ player.role }}</div>
+                        <div class="name">{{ player.user.profile.nickname }}</div>
+                        <div class="realname">{{ player.user.first_name }} {{ player.user.last_name }}</div>
+                        <a href="/users/{{ player.user.username }}">Read More</a>
+                    </div>
+
+                    {% if player.user.profile.picture %}
+                    <img src="{{ player.user.profile.picture.url }}">
+                    {% else %}
+                    <img src="{% static 'assets/silhouette.png' %}">
+                    {% endif %}
+                </article>
+                {% endfor %}
+                {% else %}
+                Team Pending Approval
+                {% endif %}
+            {% elif can_create %}
+            <a href="/create_team/{{ school.id }}" class="create_team_btn">Create Team</a>
+            {% else %}
+            N/A
+            {% endif %}
+        </section>
+    </section>
+
+    <section class="division">
+        <div class="header">
+            <h1>Division II</h1>
+        </div>
+        {% if can_create %}
+        <a href="/create_team/{{ school.id }}" class="create_team_btn">Create Team</a>
+        {% endif %}
+        <section class="d2teams">
+            {% for team in d2teams %}
+            <article class="d2team">
+                <div class="name">{{ team.name }}</div>
+                <div class="captain">Captain: {{ team.captain }}</div>
+            </article>
+            {% endfor %}
+        </section>
+    </section>
+
+    <hr>
+    <br>
+    {% if can_join %}
+    <a href="/join_team/{{ school.id }}" class="create_team_btn">Join a Team</a>
+    {% endif %}
+    {% if team %}
+    <a href="/manage_team/{{ team.id }}" class="create_team_btn">Manage Team</a>
+    {% endif %}
+    <br>
+</div>
+{% endblock %}
