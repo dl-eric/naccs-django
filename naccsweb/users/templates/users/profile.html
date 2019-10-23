@@ -11,10 +11,10 @@
         <img id="player_img" src="{% static 'assets/silhouette.png' %}">
     {% endif %}
     <section id="player_info">
-        <div id="nickname">{{ player.profile.nickname }}</div>
-        <div id="full_name">{{ player.first_name }} {{ player.last_name }}</div>
-        <div id="school">{{ player.profile.college }}</div><!-- School -->
-        <div id="division">Division I</div>
+        <div id="nickname">{{ player.user.profile.nickname }}</div>
+        <div id="full_name">{{ player.user.first_name }} {{ player.user.last_name }}</div>
+        <div id="school">{{ player.user.profile.college }}</div>
+        <div id="division">{{ player.team.division.name }}</div>
     </section>
 </section>
 <div class="content">
@@ -23,7 +23,7 @@
             BIO
         </div>
         <div class="body">
-            {{ player.profile.bio }}
+            {{ player.user.profile.bio }}
         </div>
     </section>
 

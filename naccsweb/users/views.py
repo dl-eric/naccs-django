@@ -29,10 +29,11 @@ def profile_search(request):
 def profile(request, page_alias):
     try:
         user = User.objects.get(username=page_alias)
+        player = Player.objects.get(user=user)
     except:
         return redirect('not_found')
 
-    profile = {'player': user}
+    profile = {'player': player}
     return render(request, 'users/profile.html', context=profile)
 
 # Register view
