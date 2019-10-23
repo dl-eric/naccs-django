@@ -4,14 +4,29 @@ from paypalrestsdk import *
 from django.contrib.auth.decorators import login_required
 from django.conf import settings as django_settings
 from django.http import HttpResponseServerError
+from django.utils import timezone
+
 import logging # Sentry
 
-from .models import User, Player, Payment
+from .models import User, Player, Payment, Division
 
 paypal.configure({
     "mode": django_settings.PAYPAL_MODE,  # sandbox or live
     "client_id": django_settings.PAYPAL_CLIENT_ID,
     "client_secret": django_settings.CLIENT_SECRET})
+
+def needs_to_pay(player):
+    """
+    Returns true if player needs to pay
+    """
+    num_main = get_num_main_paid(Player.objects.filter(team=player.team))
+
+    if num_main > 5:
+        # Needs to pay if less than sub fee
+        player.amount_paid < player.team.division.sub_fee
+    else:
+        # Needs to pay main fee
+        return player.amount_paid < player.team.division.fee
 
 def check_ready(team):
     # Check if has 5 main paid players
@@ -19,7 +34,7 @@ def check_ready(team):
 
     num_main = get_num_main_paid(players)
 
-    if num_main >= 2: # 5 = Full roster
+    if num_main >= 5: # 5 = Full roster
         team.is_ready = True
         team.save()
     else:
@@ -28,6 +43,9 @@ def check_ready(team):
 
 
 def get_num_main_paid(players):
+    """
+    Returns number of main players within input
+    """
     main_fee = players[0].team.division.fee
     num_main = 0
 
@@ -37,45 +55,77 @@ def get_num_main_paid(players):
 
     return num_main
 
-def get_payment_amount(player):
+def get_payment_items(players):
+    """
+    Input: Player names of all the same team and division
+    """
     # Get all players on the same team.
-    players = Player.objects.filter(team=player.team)
+    team = Player.objects.get(user__username=players[0]).team
+    roster = Player.objects.filter(team=team)
 
-    main_fee = player.team.division.fee
-    sub_fee  = player.team.division.sub_fee
+    main_fee = team.division.fee
+    sub_fee  = team.division.sub_fee
     
-    num_main = get_num_main_paid(players)
+    num_main = get_num_main_paid(roster)
+    items = {}
 
-    if num_main < 5:
-        # This player should pay main fee
-        amount = main_fee - player.amount_paid
+    for player in players:
+        player = Player.objects.get(user__username=player)
+
+        if num_main < 5:
+            # This player should pay main fee
+            items[player.user.username] = main_fee - player.amount_paid
+            num_main += 1
+        else:
+            # This player should pay min fee
+            items[player.user.username] = sub_fee - player.amount_paid
+
+    return items
+
+def create_itemized_payment(domain, description, items, team_id=-1):
+    """
+    Args:
+        domain (str): Host domain
+        description (str): Payment Description
+        items (dict): Player name -> Amount player needs paid
+    """
+
+    payment_items = []
+    
+    total_amount = 0
+    for name in items:
+        payment_item = {
+            "name": name,
+            "price": items[name],
+            "currency": "USD",
+            "quantity": 1,
+        }
+        payment_items.append(payment_item)
+        total_amount += items[name]
+    
+    if team_id == -1:
+        redirect_urls = {
+            "return_url": "http://" + domain + "/payment_return?success=true",
+            "cancel_url": "http://" + domain + "/payment_return?cancel=true"
+        }
     else:
-        # This player should pay min fee
-        amount = sub_fee - player.amount_paid
+        redirect_urls = {
+            "return_url": "http://" + domain + "/payment_return?success=true&team_id=" + team_id,
+            "cancel_url": "http://" + domain + "/payment_return?cancel=true&team_id=" + team_id
+        }
 
-    return amount
-
-
-def create_payment(domain, name, price, description):
-    """
-    Creates a PayPal payment and returns a redirect URL on success.
-    On failure, it returns None
-    """
-
-    payment=paypal.Payment({
+    payment = paypal.Payment({
         "intent": "sale",
 
         # Payer
         # A resource representing a Payer that funds a payment
         # Payment Method as 'paypal'
         "payer": {
-            "payment_method": "paypal"},
+            "payment_method": "paypal"
+        },
 
         # Redirect URLs
-        "redirect_urls": {
-            "return_url": "http://" + domain + "/payment_return?success=true",
-            "cancel_url": "http://" + domain + "/payment_return?cancel=true"
-        },
+        "redirect_urls": redirect_urls,
 
         # Transaction
         # A transaction defines the contract of a
@@ -85,17 +135,13 @@ def create_payment(domain, name, price, description):
 
             # ItemList
             "item_list": {
-                "items": [{
-                    "name": name,
-                    "sku": "fee",
-                    "price": price,
-                    "currency": "USD",
-                    "quantity": 1}]},
+                "items": payment_items
+            },
 
             # Amount
             # Let's you specify a payment amount.
             "amount": {
-                "total": price,
+                "total": total_amount,
                 "currency": "USD"},
             "description": description}]
     })
@@ -111,11 +157,15 @@ def pay_fee(request):
         redirect('account')
 
     # Determine how much the player has to pay
-    amount = get_payment_amount(player)
-    payment = create_payment(request.get_host(), player.team.division.name + " Fee", str(amount), "League fee for NACCS 2019-2020")
+    items = get_payment_items([player.user.username])
+    payment = create_itemized_payment(request.get_host(), "League fee for NACCS 2019-2020", items)
 
     if payment.create():
         print("Payment[%s] created successfully" % (payment.id))
+        new_payment = Payment(paymentid=payment.id, payerid=None, date=timezone.now())
+        new_payment.save()
+        new_payment.users.set([player])
+        new_payment.save()
         # Redirect the user to given approval url
         for link in payment.links:
             if link.method == "REDIRECT":
@@ -134,9 +184,6 @@ def pay_fee(request):
 def payment_return(request):
     # Check for success
     if request.GET.get('success') == "true":
-        user = User.objects.get(username=request.user)
-        player = Player.objects.get(user=user)
-
         # ID of the payment. This ID is provided when creating payment.
         paymentId = request.GET.get('paymentId')
         payer_id = request.GET.get('PayerID')
@@ -144,21 +191,27 @@ def payment_return(request):
         
         # PayerID is required to approve the payment.
         if payment.execute({"payer_id": payer_id}):
-            payment = paypal.Payment.find(paymentId)
-            amount_paid = payment.transactions[0].amount.total
-            
-            newPayment = Payment(
-                name=request.user, paymentid=paymentId, payerid=payer_id, user=user, amount=amount_paid)
-            newPayment.save()
-            player.amount_paid += float(amount_paid)
-            player.save()
+            the_payment = Payment.objects.get(paymentid=paymentId)
+            the_payment.payerid = payer_id
+            the_payment.save()
+
+            for item in payment.transactions[0].item_list.items:
+                player = Player.objects.get(user__username=item.name)
+                player.amount_paid += float(item.price)
+                player.save()
 
             # Check if their team is ready now
             check_ready(player.team)
-            return redirect('account')
+            if request.GET.get('team_id'):
+                return redirect('manage_team', request.GET.get('team_id'))
+            else:
+                return redirect('account')
         else:
             logging.error("Payment failed!", exc_info=True)
             return redirect('index')
     
     else: # Assume we're in the cancel flow
-        return redirect('account')
+        if request.GET.get('team_id'):
+            return redirect('manage_team', request.GET.get('team_id'))
+        else:
+            return redirect('account')

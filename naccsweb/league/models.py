@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
 import uuid
 
 def get_file_path(instance, filename):
@@ -52,11 +51,9 @@ class Player(models.Model):
 
 class Payment(models.Model):
     def __str__(self):
-        return self.user.profile.nickname
+        return self.paymentid
     
-    name = models.CharField(max_length=25, blank=False)
     paymentid = models.CharField(max_length=50, blank=True)
-    payerid = models.CharField(max_length=25, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    amount = models.FloatField(default=0, blank=True)
+    payerid = models.CharField(max_length=25, blank=True, null=True)
+    users = models.ManyToManyField(Player)
     date = models.CharField(max_length=50, default=0, blank=True)

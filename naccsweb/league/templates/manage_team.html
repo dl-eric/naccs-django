@@ -25,26 +25,26 @@
                 {{ player.user.profile.nickname }}
                 <div class="player_buttons">
                     {% csrf_token %}
-                    {% if not player.user == user %}
-                    <input class="btn kick_btn" value="Kick" type="submit", name="{{ player.user.profile.nickname }}">
-                    {% endif %}
-                    <!-- Will show the payment button only for user logged in-->
-                    <!-- {% if player.user == user %}
-                        {% if player.has_paid == True %}
-                        <h5>Paid!</h5>
-                        {% elif paid_members.count >= 5 and team.division == 'Division 1' %}
-                        <a class="create_team_btn" href="/one_sub_payment">Pay Sub</a>
-                        {% elif paid_members.count < 5 and team.division == 'Division 2' %}
-                        <a class="create_team_btn" href="/two_sub_payment">Pay Sub</a>
-                        {% elif team.division == 'Division 1' %}
-                        <a class="create_team_btn" href="/one_payment">Pay</a>
-                        {% else %}
-                        <a class="create_team_btn" href="/two_payment">Pay</a>
+                    {% if forloop.counter0 < 5 %}
+                        {% if player.amount_paid < player.team.division.fee %}
+                        <input class="check_box" type="checkbox" name="pay_checkbox" value="{{ player.user.username }}">
+                        Pay
                         {% endif %}
-                    {% endif %} -->
+                    {% else %}
+                        {% if player.amount_paid < player.team.division.sub_fee %}
+                        Pay
+                        {% endif %}
+                    {% endif %}
+
+                    {% if not player.user == user %}
+                    <input class="btn kick_btn" value="Kick" type="submit" name="{{ player.user.profile.nickname }}">
+                    {% else %}
+                    <input class="btn kick_btn" value="Kick" type="button" disabled>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
+            <input class="ghost_button" value="Pay" type="submit" name="pay">
             </form>
         </div>
     </section>

@@ -838,6 +838,15 @@ textarea {
     min-width: auto;
 }
 
+.kick_btn:disabled, .btn:disabled {
+    background-color: gray;
+    cursor: default;
+}
+
+.check_box {
+    min-width: 0;
+}
+
 .hub_page {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -853,4 +862,5 @@ textarea {
 
 .hub_content{
     grid-column: 1/4;
-    justify-self: center;}
+    justify-self: center;
+}

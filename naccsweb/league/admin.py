@@ -30,7 +30,7 @@ class SchoolAdmin(admin.ModelAdmin):
 
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'paymentid', 'payerid', 'date')
+    list_display = ('paymentid', 'payerid', 'date')
 
 
 admin.site.register(Team, TeamAdmin)

@@ -10,7 +10,7 @@ urlpatterns = [
     path(r'create_team/<school_id>', views.create_team, name='create_team'),
     path(r'team_pending', views.team_pending, name='team_pending'),
     path(r'join_team/<school_id>', views.join_team, name='join_team'),
-    path(r'manage_team/<team_id>', views.manage_team),
+    path(r'manage_team/<team_id>', views.manage_team, name='manage_team'),
     path(r'pay_fee', views_payments.pay_fee),
     path(r'payment_return', views_payments.payment_return, name='payment_return'),
 ]

@@ -150,7 +150,7 @@ if DJANGO_USE_S3:
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
-    AWS_DEFAULT_ACL = None
+    AWS_DEFAULT_ACL = 'public-read'
 
     # Static Location
     AWS_STATIC_LOCATION = 'static'

@@ -2,12 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseServerError
+from django.utils import timezone
 
 from watson import search as watson
 
 from .forms import SchoolSearchForm, CreateTeamForm, JoinTeamForm, EditTeamForm
 from .models import School, Team, Player, Payment
-from .views_payments import check_ready
+from .views_payments import check_ready, create_itemized_payment, get_payment_items
 
 def on_a_team(user):
     '''
@@ -61,10 +63,38 @@ def manage_team(request, team_id):
         return redirect('index')
 
     if request.method == 'POST':
-        if ('team_info' in request.POST):
+        if 'team_info' in request.POST:
             form = EditTeamForm(request.POST, instance=team)
             if form.is_valid():
                 form.save()
+        elif 'pay' in request.POST:
+            # They want to pay
+            players_to_pay = request.POST.getlist('pay_checkbox')
+            
+            items = get_payment_items(players_to_pay)
+            payment = create_itemized_payment(request.get_host(), "Bulk Pay for NACCS 2019-2020", items, team_id=team_id)
+                
+            if payment.create():
+                print("Payment[%s] created successfully" % (payment.id))
+                players = Player.objects.filter(user__username__in=players_to_pay)
+                new_payment = Payment(paymentid=payment.id, payerid=None, date=timezone.now())
+                new_payment.save()
+                new_payment.users.set(players)
+                new_payment.save()
+
+                # Redirect the user to given approval url
+                for link in payment.links:
+                    if link.method == "REDIRECT":
+                        # Convert to str to avoid google appengine unicode issue
+                        # https://github.com/paypal/rest-api-sdk-python/pull/58
+                        redirect_url=str(link.href)
+                        print("Redirect for approval: %s" % (redirect_url))
+                        return redirect(redirect_url)
+
+            else:
+                print("Error while creating payment:")
+                print(payment.error)
+                return HttpResponseServerError()
         else:
             # They want to kick a player.
             for name in request.POST:
