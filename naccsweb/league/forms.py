@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Team, School, Player
+from .models import Team, School, Player, Division
 
 
 class SchoolSearchForm(forms.Form):
@@ -57,21 +57,14 @@ class CreateTeamForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        division = cleaned_data.get('division')
-        if division != 'Division 1' and division != 'Division 2':
-            raise ValidationError("Division Malformed")
-
         school = School.objects.get(id=self.school_id)
-
-        if division == 'Division 1':
+        print(cleaned_data)
+        if cleaned_data["division"].name == 'Division 1':
             # Check if there already exists a D1 team
-            if Team.objects.filter(school=school, division='Division 1').exists():
+            team = Team.objects.filter(school=school, division__name="Division 1").count()
+            print(team)
+            if team > 0:
                 raise ValidationError('A D1 team already exists for that school!')
-
-        if division == 'Division 2':
-            # Check if there already exists a D2 team
-            if Team.objects.filter(school=school, division='Division 2').exists():
-                raise ValidationError('A D2 team already exists for that school!')
         
         # Check if team name is already taken
         if Team.objects.filter(name=cleaned_data.get('name')).exists():
@@ -81,4 +74,4 @@ class CreateTeamForm(forms.ModelForm):
 
     name = forms.CharField(label="Team Name", required=True)
     join_password = forms.CharField(label="Join Password", required=True, widget=forms.PasswordInput())
-    division = forms.ChoiceField(label="Division", required=True, choices=[("Division 1", "Division 1"), ("Division 2", "Division 2")])
+    division = forms.ModelChoiceField(queryset=Division.objects.all(), label="Division", required=True, empty_label=None)

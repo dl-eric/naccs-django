@@ -150,7 +150,7 @@ if DJANGO_USE_S3:
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
-    AWS_DEFAULT_ACL = 'public-read'
+    AWS_DEFAULT_ACL = None
 
     # Static Location
     AWS_STATIC_LOCATION = 'static'
@@ -167,6 +167,7 @@ if DJANGO_USE_S3:
     AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
     PRIVATE_FILE_STORAGE = 'naccsweb.storage_backends.PrivateMediaStorage'
 else:
+    AWS_DEFAULT_ACL = None
     STATIC_ROOT = os.path.join(BASE_DIR, '../staticfiles/')
     STATIC_URL = '/static/'
     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]

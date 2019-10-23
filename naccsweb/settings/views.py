@@ -11,7 +11,7 @@ from .schools import get_schools
 from .forms import CollegeForm, GraduateForm, HighSchoolForm, EditProfileForm, EditUserForm, PlayerForm
 from .email import email_college_confirmation, check_token
 from .models import GraduateFormModel, HighSchoolFormModel
-
+from league.views_payments import get_payment_amount, check_ready
 
 def verify(request, uidb64, token):
     try:
@@ -42,10 +42,12 @@ def account(request):
     try:
         player = Player.objects.get(user=user)
         playerForm = PlayerForm(instance=player)
+        needs_to_pay = get_payment_amount(player) > 0
     except:
         player = None
         playerForm = None
-
+        needs_to_pay = False
+    
     if request.method == 'POST':
         # Check if resend was hit
         if ('resend' in request.POST):
@@ -83,8 +85,12 @@ def account(request):
                 return redirect('account')
               
         if ('leave_team' in request.POST):
+            team = player.team
             player.team = None
             player.save()
+
+            # Check if the team is ready without this player
+            check_ready(team)
             return redirect('account')
 
     should_invite = False
@@ -96,8 +102,8 @@ def account(request):
         invite_link = get_invite_link(user.profile.collegiate_hub_invite)
     else:
         invite_link = None
-        
-    return render(request, 'settings/account.html', {'playerForm': playerForm, 'player': player, 'form': form, 'profileForm': profileForm, 'userForm': userForm, 'invite': invite_link, 'should_invite': should_invite})
+
+    return render(request, 'settings/account.html', {'needs_to_pay': needs_to_pay, 'playerForm': playerForm, 'player': player, 'form': form, 'profileForm': profileForm, 'userForm': userForm, 'invite': invite_link, 'should_invite': should_invite})
 
 @login_required
 def pending(request):

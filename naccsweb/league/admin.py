@@ -1,15 +1,15 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Team, School, Player, Payment
+from .models import Team, School, Player, Payment, Division
 
 
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ('user', 'has_paid')
+    list_display = ('user', 'amount_paid')
 
 
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ('name', 'school')
+    list_display = ('name', 'school', 'division', 'is_active', 'is_ready')
 
 
 class TeamInline(admin.StackedInline):
@@ -37,3 +37,4 @@ admin.site.register(Team, TeamAdmin)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(School, SchoolAdmin)
 admin.site.register(Payment, PaymentAdmin)
+admin.site.register(Division)

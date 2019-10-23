@@ -1,15 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-import paypalrestsdk as paypal
-from paypalrestsdk import *
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.decorators import login_required
 
 from watson import search as watson
 
 from .forms import SchoolSearchForm, CreateTeamForm, JoinTeamForm, EditTeamForm
 from .models import School, Team, Player, Payment
-from .views_payments import div_one_payment, div_two_payment, div_one_sub_payment, div_two_sub_payment
+from .views_payments import check_ready
 
 def on_a_team(user):
     '''
@@ -47,12 +45,6 @@ def can_create_team(user, school):
 
 
 @login_required
-@csrf_protect
-def kick_user(request):
-    next = request.POST.get('next', '/')
-    return redirect(next)
-
-@login_required
 def manage_team(request, team_id):
     user = User.objects.get(username=request.user)
 
@@ -64,18 +56,11 @@ def manage_team(request, team_id):
 
         # Get roster of the team
         roster = Player.objects.filter(team=team)
-        print(roster)
-
-        # Get paid members of the roster
-        paid_members = Player.objects.filter(team=team, has_paid=1)
-        print(paid_members)
 
     except:
-        print('error')
         return redirect('index')
 
     if request.method == 'POST':
-        print(request.POST)
         if ('team_info' in request.POST):
             form = EditTeamForm(request.POST, instance=team)
             if form.is_valid():
@@ -96,7 +81,7 @@ def manage_team(request, team_id):
 
     form = EditTeamForm(instance=team)
 
-    return render(request, 'manage_team.html', {'form': form, 'user': user, 'team': team, 'roster': roster, 'paid_members': paid_members})
+    return render(request, 'manage_team.html', {'form': form, 'user': user, 'team': team, 'roster': roster})
 
 
 def team_pending(request):
@@ -166,6 +151,9 @@ def join_team(request, school_id):
                 player = Player.objects.get(user=user)
                 player.team = team
                 player.save()
+
+                # Check if this player can make the team ready
+                check_ready(team)
             except:
                 # Player doesn't exist
                 player = Player.objects.create(user=user, team=team)
@@ -198,12 +186,12 @@ def school(request, school_id):
         return redirect('not_found')
 
     try:
-        d1team = Team.objects.get(school=school, division="Division 1")
+        d1team = Team.objects.get(school=school, division__name="Division 1")
     except:
         d1team = None
 
     try:
-        d2teams = Team.objects.filter(school=school, division="Division 2")
+        d2teams = Team.objects.filter(school=school, division__name="Division 2")
     except:
         d2teams = None
 
@@ -220,6 +208,7 @@ def school(request, school_id):
         # Not logged in
         can_create = False
         can_join = False
+        team = None
 
     d1team_roster = Player.objects.filter(team=d1team)
 
@@ -232,43 +221,3 @@ def hub(request):
 
 def league(request):
     return render(request, 'league.html')
-
-
-def one_payment(request):
-    return div_one_payment()
-
-
-def two_payment(request):
-    return div_two_payment()
-
-
-def one_sub_payment(request):
-    return div_one_sub_payment()
-
-
-def two_sub_payment(request):
-    return div_two_sub_payment()
-
-
-def payment_return(request):
-    user = User.objects.get(username=request.user)
-    player = Player.objects.get(user=user)
-
-    # ID of the payment. This ID is provided when creating payment.
-    paymentId = request.GET.get('paymentId')
-    payer_id = request.GET.get('PayerID')
-    payment = paypal.Payment.find(paymentId)
-
-    # PayerID is required to approve the payment.
-    if payment.execute({"payer_id": payer_id}):
-        newPayment = Payment(
-            name=request.user, paymentid=paymentId, payerid=payer_id, user=user)
-        newPayment.save()
-        player.has_paid = 1
-        player.save()
-
-        print(paymentId + " " + payer_id)
-        return redirect('index')
-    else:
-        print('error')
-        return redirect('index')

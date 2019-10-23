@@ -1,17 +1,66 @@
 from django.shortcuts import render, redirect
 import paypalrestsdk as paypal
 from paypalrestsdk import *
-from naccsweb.settings import PAYPAL_CLIENT_ID, CLIENT_SECRET
-import os
+from django.contrib.auth.decorators import login_required
+from django.conf import settings as django_settings
+from django.http import HttpResponseServerError
+import logging # Sentry
+
+from .models import User, Player, Payment
 
 paypal.configure({
-    "mode": os.environ.get('PAYPAL_MODE'),  # sandbox or live
-    "client_id": PAYPAL_CLIENT_ID,
-    "client_secret": CLIENT_SECRET})
+    "mode": django_settings.PAYPAL_MODE,  # sandbox or live
+    "client_id": django_settings.PAYPAL_CLIENT_ID,
+    "client_secret": django_settings.CLIENT_SECRET})
+
+def check_ready(team):
+    # Check if has 5 main paid players
+    players = Player.objects.filter(team=team)
+
+    num_main = get_num_main_paid(players)
+
+    if num_main >= 2: # 5 = Full roster
+        team.is_ready = True
+        team.save()
+    else:
+        team.is_ready = False
+        team.save()
 
 
+def get_num_main_paid(players):
+    main_fee = players[0].team.division.fee
+    num_main = 0
 
-def div_one_payment():
+    for p in players:
+        if p.amount_paid >= main_fee:
+            num_main += 1
+
+    return num_main
+
+def get_payment_amount(player):
+    # Get all players on the same team.
+    players = Player.objects.filter(team=player.team)
+
+    main_fee = player.team.division.fee
+    sub_fee  = player.team.division.sub_fee
+    
+    num_main = get_num_main_paid(players)
+
+    if num_main < 5:
+        # This player should pay main fee
+        amount = main_fee - player.amount_paid
+    else:
+        # This player should pay min fee
+        amount = sub_fee - player.amount_paid
+
+    return amount
+
+
+def create_payment(domain, name, price, description):
+    """
+    Creates a PayPal payment and returns a redirect URL on success.
+    On failure, it returns None
+    """
 
     payment=paypal.Payment({
         "intent": "sale",
@@ -24,8 +73,9 @@ def div_one_payment():
 
         # Redirect URLs
         "redirect_urls": {
-            "return_url": "http://collegiatecounterstrike.com/payment_return?success=true",
-            "cancel_url": "http://collegiatecounterstrike.com/payment_return?cancel=true"},
+            "return_url": "http://" + domain + "/payment_return?success=true",
+            "cancel_url": "http://" + domain + "/payment_return?cancel=true"
+        },
 
         # Transaction
         # A transaction defines the contract of a
@@ -36,20 +86,34 @@ def div_one_payment():
             # ItemList
             "item_list": {
                 "items": [{
-                    "name": "Division 1 Fees",
+                    "name": name,
                     "sku": "fee",
-                    "price": "25.00",
+                    "price": price,
                     "currency": "USD",
                     "quantity": 1}]},
 
             # Amount
             # Let's you specify a payment amount.
             "amount": {
-                "total": "25.00",
+                "total": price,
                 "currency": "USD"},
-            "description": "Summer League Fees"}]})
+            "description": description}]
+    })
 
-    # Create Payment and return status
+    return payment
+
+@login_required
+def pay_fee(request):
+    try:
+        player = Player.objects.get(user__username=request.user)
+    except:
+        # User is not a player, they shouldn't be here.
+        redirect('account')
+
+    # Determine how much the player has to pay
+    amount = get_payment_amount(player)
+    payment = create_payment(request.get_host(), player.team.division.name + " Fee", str(amount), "League fee for NACCS 2019-2020")
+
     if payment.create():
         print("Payment[%s] created successfully" % (payment.id))
         # Redirect the user to given approval url
@@ -60,166 +124,41 @@ def div_one_payment():
                 redirect_url=str(link.href)
                 print("Redirect for approval: %s" % (redirect_url))
                 return redirect(redirect_url)
+
     else:
         print("Error while creating payment:")
         print(payment.error)
-        return "Error while creating payment"
+        return HttpResponseServerError()
 
-def div_two_payment():
-    payment=paypal.Payment({
-            "intent": "sale",
+@login_required
+def payment_return(request):
+    # Check for success
+    if request.GET.get('success') == "true":
+        user = User.objects.get(username=request.user)
+        player = Player.objects.get(user=user)
 
-            # Payer
-            # A resource representing a Payer that funds a payment
-            # Payment Method as 'paypal'
-            "payer": {
-                "payment_method": "paypal"},
+        # ID of the payment. This ID is provided when creating payment.
+        paymentId = request.GET.get('paymentId')
+        payer_id = request.GET.get('PayerID')
+        payment = paypal.Payment.find(paymentId)
+        
+        # PayerID is required to approve the payment.
+        if payment.execute({"payer_id": payer_id}):
+            payment = paypal.Payment.find(paymentId)
+            amount_paid = payment.transactions[0].amount.total
+            
+            newPayment = Payment(
+                name=request.user, paymentid=paymentId, payerid=payer_id, user=user, amount=amount_paid)
+            newPayment.save()
+            player.amount_paid += float(amount_paid)
+            player.save()
 
-            # Redirect URLs
-            "redirect_urls": {
-                "return_url": "http://collegiatecounterstrike.com/payment_return?success=true",
-                "cancel_url": "http://collegiatecounterstrike.com/payment_return?cancel=true"},
-
-            # Transaction
-            # A transaction defines the contract of a
-            # payment - what is the payment for and who
-            # is fulfilling it.
-            "transactions": [{
-
-                # ItemList
-                "item_list": {
-                    "items": [{
-                        "name": "NACCS Division 2 Fees",
-                        "sku": "fee",
-                        "price": "10.00",
-                        "currency": "USD",
-                        "quantity": 1}]},
-
-                # Amount
-                # Let's you specify a payment amount.
-                "amount": {
-                    "total": "10.00",
-                    "currency": "USD"},
-                "description": "NACCS Division 2 Fees"}]})
-
-        # Create Payment and return status
-    if payment.create():
-        print("Payment[%s] created successfully" % (payment.id))
-            # Redirect the user to given approval url
-        for link in payment.links:
-            if link.method == "REDIRECT":
-                    # Convert to str to avoid google appengine unicode issue
-                    # https://github.com/paypal/rest-api-sdk-python/pull/58
-                redirect_url=str(link.href)
-                print("Redirect for approval: %s" % (redirect_url))
-                return redirect(redirect_url)
-    else:
-        print("Error while creating payment:")
-        print(payment.error)
-        return "Error while creating payment"
-
-def div_one_sub_payment():
-    payment=paypal.Payment({
-            "intent": "sale",
-
-            # Payer
-            # A resource representing a Payer that funds a payment
-            # Payment Method as 'paypal'
-            "payer": {
-                "payment_method": "paypal"},
-
-            # Redirect URLs
-            "redirect_urls": {
-                "return_url": "http://collegiatecounterstrike.com/payment_return?success=true",
-                "cancel_url": "http://collegiatecounterstrike.com/payment_return?cancel=true"},
-
-            # Transaction
-            # A transaction defines the contract of a
-            # payment - what is the payment for and who
-            # is fulfilling it.
-            "transactions": [{
-
-                # ItemList
-                "item_list": {
-                    "items": [{
-                        "name": "NACCS Division 1 Sub Fees",
-                        "sku": "fee",
-                        "price": "12.50",
-                        "currency": "USD",
-                        "quantity": 1}]},
-
-                # Amount
-                # Let's you specify a payment amount.
-                "amount": {
-                    "total": "12.50",
-                    "currency": "USD"},
-                "description": "NACCS Division 1 Sub Fees"}]})
-
-        # Create Payment and return status
-    if payment.create():
-        print("Payment[%s] created successfully" % (payment.id))
-            # Redirect the user to given approval url
-        for link in payment.links:
-            if link.method == "REDIRECT":
-                    # Convert to str to avoid google appengine unicode issue
-                    # https://github.com/paypal/rest-api-sdk-python/pull/58
-                redirect_url=str(link.href)
-                print("Redirect for approval: %s" % (redirect_url))
-                return redirect(redirect_url)
-    else:
-        print("Error while creating payment:")
-        print(payment.error)
-        return "Error while creating payment"
-
-def div_two_sub_payment():
-    payment=paypal.Payment({
-            "intent": "sale",
-
-            # Payer
-            # A resource representing a Payer that funds a payment
-            # Payment Method as 'paypal'
-            "payer": {
-                "payment_method": "paypal"},
-
-            # Redirect URLs
-            "redirect_urls": {
-                "return_url": "http://collegiatecounterstrike.com/payment_return?success=true",
-                "cancel_url": "http://collegiatecounterstrike.com/payment_return?cancel=true"},
-
-            # Transaction
-            # A transaction defines the contract of a
-            # payment - what is the payment for and who
-            # is fulfilling it.
-            "transactions": [{
-
-                # ItemList
-                "item_list": {
-                    "items": [{
-                        "name": "NACCS Division 2 Sub Fees",
-                        "sku": "fee",
-                        "price": "5.00",
-                        "currency": "USD",
-                        "quantity": 1}]},
-
-                # Amount
-                # Let's you specify a payment amount.
-                "amount": {
-                    "total": "5.00",
-                    "currency": "USD"},
-                "description": "NACCS Division 2 Sub Fees"}]})
-
-        # Create Payment and return status
-    if payment.create():
-        print("Payment[%s] created successfully" % (payment.id))
-            # Redirect the user to given approval url
-        for link in payment.links:
-            if link.method == "REDIRECT":
-                    # Convert to str to avoid google appengine unicode issue
-                    # https://github.com/paypal/rest-api-sdk-python/pull/58
-                redirect_url=str(link.href)
-                print("Redirect for approval: %s" % (redirect_url))
-                return redirect(redirect_url)
-    else:
-        print("Error while creating payment:")
-        print(payment.error)
-        return "Error while creating payment"
+            # Check if their team is ready now
+            check_ready(player.team)
+            return redirect('account')
+        else:
+            logging.error("Payment failed!", exc_info=True)
+            return redirect('index')
+    
+    else: # Assume we're in the cancel flow
+        return redirect('account')

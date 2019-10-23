@@ -21,15 +21,24 @@ class School(models.Model):
     rank = models.PositiveIntegerField(blank=True, default=0)
     main_color = models.CharField(max_length=6, blank=True)
 
+class Division(models.Model):
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=32)
+    fee = models.IntegerField(default=0)
+    sub_fee = models.IntegerField(default=0)
+
 class Team(models.Model):
     def __str__(self):
         return self.name
 
     name = models.CharField(max_length=80)
-    division = models.CharField(max_length=32)
+    division = models.ForeignKey(Division, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     captain = models.ForeignKey(User, related_name="captain", on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)
+    is_ready = models.BooleanField(default=False)
     join_password = models.CharField(max_length=64, blank=True)
 
 class Player(models.Model):
@@ -37,7 +46,7 @@ class Player(models.Model):
         return self.user.profile.nickname
 
     role = models.CharField(max_length=12, blank=True)
-    has_paid = models.BooleanField(default=False)
+    amount_paid = models.FloatField(default=0)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
 
@@ -48,5 +57,6 @@ class Payment(models.Model):
     name = models.CharField(max_length=25, blank=False)
     paymentid = models.CharField(max_length=50, blank=True)
     payerid = models.CharField(max_length=25, blank=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    date = models.CharField(max_length=50, default=datetime.now(), blank=True) 
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.FloatField(default=0, blank=True)
+    date = models.CharField(max_length=50, default=0, blank=True)

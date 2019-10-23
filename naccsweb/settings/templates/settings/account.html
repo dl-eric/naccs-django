@@ -111,10 +111,18 @@
                     <input class="button" type="submit" value="Update" name="team">
                 </form>
 
+                {% if player.team.captain != user %}
                 <form action="" method="post">
                     {% csrf_token %}
                     <input class="button" type="submit" value="Leave Team" name="leave_team">
                 </form>
+                {% else %}
+                <p><em>Team captains can't leave their teams. Contact NACCS to change captains.</em></p>
+                {% endif %}
+
+                {% if needs_to_pay %}
+                <a href="/pay_fee">Pay Fee</a>
+                {% endif %}
             </section>
         </section>
     </section>

@@ -13,7 +13,7 @@ from .schools import get_schools
 class PlayerForm(forms.ModelForm):
     class Meta:
         model = Player
-        exclude = ['has_paid', 'user', 'team']
+        exclude = ['amount_paid', 'user', 'team']
 
 class CollegeForm(forms.Form):
     def __init__(self, *args, **kwargs):

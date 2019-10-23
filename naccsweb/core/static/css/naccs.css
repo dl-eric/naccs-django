@@ -387,6 +387,7 @@ background-color: #ddd;
     height: 40px;
     line-height: 40px;
     text-align: center;
+    text-decoration: none;
 }
 
 .panel .footer {
@@ -784,8 +785,9 @@ textarea {
     width: 100px;
 
 }
+
 .hub_stats_column .title {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: bold;
     color: #5e7aac;
     flex-basis: 20%;
@@ -852,21 +854,3 @@ textarea {
 .hub_content{
     grid-column: 1/4;
     justify-self: center;}
-
-.hub_page_column .underline {
-    height: 10px;
-    width: 200px;
-    background-color: #5e7aac;
-    transform: skew(-30deg);
-    justify-self: center;
-    width: 100px;
-
-}
-.hub_stats_column .title {
-    font-size: 30px;
-    font-weight: bold;
-    color: #5e7aac;
-    flex-basis: 20%;
-    text-align: right;
-    justify-self: center;
-}

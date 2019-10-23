@@ -29,19 +29,19 @@
                     <input class="btn kick_btn" value="Kick" type="submit", name="{{ player.user.profile.nickname }}">
                     {% endif %}
                     <!-- Will show the payment button only for user logged in-->
-                    {% if player.user == user %}
-                    {% if player.has_paid == True %}
-                    <h5>Paid!</h5>
-                    {% elif paid_members.count >= 5 and team.division == 'Division 1' %}
-                    <a class="create_team_btn" href="/one_sub_payment">Pay Sub</a>
-                    {% elif paid_members.count < 5 and team.division == 'Division 2' %}
-                    <a class="create_team_btn" href="/two_sub_payment">Pay Sub</a>
-                    {% elif team.division == 'Division 1' %}
-                    <a class="create_team_btn" href="/one_payment">Pay</a>
-                    {% else %}
-                    <a class="create_team_btn" href="/two_payment">Pay</a>
-                    {% endif %}
-                    {% endif %}
+                    <!-- {% if player.user == user %}
+                        {% if player.has_paid == True %}
+                        <h5>Paid!</h5>
+                        {% elif paid_members.count >= 5 and team.division == 'Division 1' %}
+                        <a class="create_team_btn" href="/one_sub_payment">Pay Sub</a>
+                        {% elif paid_members.count < 5 and team.division == 'Division 2' %}
+                        <a class="create_team_btn" href="/two_sub_payment">Pay Sub</a>
+                        {% elif team.division == 'Division 1' %}
+                        <a class="create_team_btn" href="/one_payment">Pay</a>
+                        {% else %}
+                        <a class="create_team_btn" href="/two_payment">Pay</a>
+                        {% endif %}
+                    {% endif %} -->
                 </div>
             </div>
             {% endfor %}
