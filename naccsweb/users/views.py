@@ -11,13 +11,14 @@ from watson import search as watson
 from .forms import RegisterForm, PlayerSearchForm
 from .tokens import account_activation_token
 from users.models import Profile
+from league.models import Player
 
 def profile_search(request):
     if (request.method == "POST"):
         form = PlayerSearchForm(request.POST)
 
         if (form.is_valid()):
-            search_results = watson.filter(Profile, form.data['query'])
+            search_results = watson.filter(Player, form.data['query'])
             return render(request, 'users/search.html', {'form': form, 'results':search_results})
     else:
         form = PlayerSearchForm()

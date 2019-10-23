@@ -860,9 +860,20 @@ textarea {
 
 }
 
-.hub_content{
+.hub_content {
     grid-column: 1/4;
     justify-self: center;
+}
+
+.league_jumbo {
+    height: 300px;
+    background-image: url('/static/assets/league_bg.png');
+    background-size: cover;
+    background-position-y: 20%;
+}
+
+.league_jumbo h1 {
+    color: white;
 }
 
 .paypal_button {

@@ -24,7 +24,7 @@
         {% for player in results %}
         <div class="search_result player">
             <div class="name">
-                <a href="/users/{{ player.nickname }}">{{ player.nickname }}</a>
+                <a href="/users/{{ player.user.username }}">{{ player.user.profile.nickname }}</a>
             </div>
             <div class="college">{{ player.college }}</div>
         </div>
