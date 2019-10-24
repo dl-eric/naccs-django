@@ -5,7 +5,7 @@ from .models import Team, School, Player, Division
 
 
 class SchoolSearchForm(forms.Form):
-    query = forms.CharField(label="College Name", min_length=6,
+    query = forms.CharField(label="College Name", min_length=4,
                             widget=forms.TextInput(attrs={'placeholder': 'Search'}))
 
 class JoinTeamForm(forms.Form):
