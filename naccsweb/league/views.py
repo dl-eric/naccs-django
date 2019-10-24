@@ -49,36 +49,21 @@ def can_create_team(user, school):
 
 @login_required
 def manage_team(request, team_id):
-    user = User.objects.get(username=request.user)
-
-    try:
-        team = Team.objects.get(id=team_id)
-
-        # Check if player is on the team
-        Player.objects.get(user=user, team=team)
-
-        # Get roster of the team
-        roster = Player.objects.filter(team=team).order_by('-amount_paid')
-
-        # Check if any players need to pay
-        create_payment_button = False
-        for player in roster:
-            if needs_to_pay(player):
-                create_payment_button = True
-                break
-
-    except:
-        return redirect('index')
-
     if request.method == 'POST':
+        players_to_pay = request.POST.getlist('pay_checkbox')
+
         if 'team_info' in request.POST:
+            team = Team.objects.get(id=team_id)
             form = EditTeamForm(request.POST, instance=team)
             if form.is_valid():
                 form.save()
+        elif 'pay' in request.POST and len(players_to_pay) == 0:
+            # They hit pay but nothing was checked
+            pass
         elif 'pay' in request.POST:
             # They want to pay
             players_to_pay = request.POST.getlist('pay_checkbox')
-            
+
             items = get_payment_items(players_to_pay)
             payment = create_itemized_payment(request.get_host(), "Bulk Pay for NACCS 2019-2020", items, team_id=team_id)
                 
@@ -114,6 +99,28 @@ def manage_team(request, team_id):
                 to_delete.save()
             except:
                 print("Unable to delete user", name)
+
+    user = User.objects.get(username=request.user)
+
+    try:
+        team = Team.objects.get(id=team_id)
+
+        # Check if player is on the team
+        Player.objects.get(user=user, team=team)
+
+        # Get roster of the team
+        roster = Player.objects.filter(team=team).order_by('-amount_paid')
+
+        # Check if any players need to pay
+        create_payment_button = False
+        for player in roster:
+            if needs_to_pay(player):
+                create_payment_button = True
+                break
+
+    except:
+        logging.error("Getting roster", exc_info=True)
+        return redirect('index')
 
     form = EditTeamForm(instance=team)
 
