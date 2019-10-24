@@ -319,6 +319,12 @@ background-color: #ddd;
 
 #partners > .partner {
     height: 80px;
+    margin: 0 30px;
+}
+
+#partners > .skybox {
+    height: 60px;
+    margin-top: 10px;
 }
 
 #plain_header {
