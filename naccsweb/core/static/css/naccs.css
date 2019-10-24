@@ -789,7 +789,7 @@ textarea {
 
 .hub_stats_column {
     display: grid;
-    grid-template-rows: 1fr .25fr 1fr;
+    grid-template-rows: 1fr .25fr .5fr;
 
 }
 
