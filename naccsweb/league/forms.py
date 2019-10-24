@@ -58,11 +58,9 @@ class CreateTeamForm(forms.ModelForm):
         cleaned_data = super().clean()
 
         school = School.objects.get(id=self.school_id)
-        print(cleaned_data)
         if cleaned_data["division"].name == 'Division 1':
             # Check if there already exists a D1 team
             team = Team.objects.filter(school=school, division__name="Division 1").count()
-            print(team)
             if team > 0:
                 raise ValidationError('A D1 team already exists for that school!')
         
