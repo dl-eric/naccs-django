@@ -130,7 +130,7 @@ def manage_team(request, team_id):
 def team_pending(request):
     return render(request, 'team_pending.html')
 
-  
+@login_required
 def create_team(request, school_id):
     # Make sure we have a valid school_id
     try:
