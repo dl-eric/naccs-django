@@ -1,7 +1,10 @@
 {% autoescape off %}
 Hi {{ user.profile.nickname }},
 
-Your account has successfully been created. Please click below link to activate your account
+Your account has successfully been created. Please click the link below to activate your account.
 
 http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Thanks,
+The NACCS Team.
 {% endautoescape %}

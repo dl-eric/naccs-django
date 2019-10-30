@@ -1,0 +1,10 @@
+{% autoescape off %}
+Hi {{ user.profile.nickname }},
+
+Please click the link below to verify your college credentials.
+
+http://{{ domain }}{% url 'verify' uidb64=uid token=token %}
+
+Thanks,
+The NACCS Team
+{% endautoescape %}

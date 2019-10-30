@@ -10,14 +10,22 @@ def email_college_confirmation(email, request):
         current_site = get_current_site(request)
         subject = "Verify your College Credentials!"
         
+        message = render_to_string('verification/verification_email.txt', {
+                'user': request.user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(request.user.pk)),
+                'token': default_token_generator.make_token(request.user),
+        })
+
         html_message = render_to_string('verification/verification_email.html', {
                 'user': request.user,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(request.user.pk)),
                 'token': default_token_generator.make_token(request.user),
         })
+
         print ("Emailing user...")
-        send_mail(subject, html_message, 'noreply@collegiatecounterstrike.com', [email])
+        send_mail(subject, message, 'noreply@collegiatecounterstrike.com', [email], html_message=html_message)
         print ("Emailed user!")
         
 def check_token(user, token):
