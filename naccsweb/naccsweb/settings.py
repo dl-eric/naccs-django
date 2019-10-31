@@ -175,8 +175,8 @@ else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.zoho.com'
-EMAIL_HOST_USER = 'noreply@collegiatecounterstrike.com'
+EMAIL_HOST = 'smtp.office365.com'
+EMAIL_HOST_USER = 'eric.lee@collegiatecounterstrike.com'
 SERVER_EMAIL = 'noreply@collegiatecounterstrike.com'
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_PORT = 587
