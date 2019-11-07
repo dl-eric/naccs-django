@@ -764,7 +764,7 @@ textarea {
 
 .d2team {
     position: relative;
-    height: 60px;
+    height: auto;
     width: 320px;
     background-color: white;
     padding: 20px 16px;

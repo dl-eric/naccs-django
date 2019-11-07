@@ -66,10 +66,14 @@
         <a href="/create_team/{{ school.id }}" class="create_team_btn">Create Team</a>
         {% endif %}
         <section class="d2teams">
-            {% for team in d2teams %}
+            {% for team, roster in d2teams %}
             <article class="d2team">
                 <div class="name">{{ team.name }}</div>
-                <div class="captain">Captain: {{ team.captain }}</div>
+                <ul>
+                    {% for player in roster %}
+                    <li><a href="/users/{{ player.user.username }}">{{ player.user.profile.nickname }}</a></li>
+                    {% endfor %}
+                </ul>
             </article>
             {% endfor %}
         </section>

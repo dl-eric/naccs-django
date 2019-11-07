@@ -237,8 +237,13 @@ def school(request, school_id):
 
     try:
         d2teams = Team.objects.filter(school=school, division__name="Division 2")
+        d2 = []
+        for d2team in d2teams:
+            # Get roster
+            d2team_roster = Player.objects.filter(team=d2team)
+            d2.append((d2team, d2team_roster))
     except:
-        d2teams = None
+        d2 = None
 
     try:
         user = User.objects.get(username=request.user)
@@ -257,7 +262,7 @@ def school(request, school_id):
 
     d1team_roster = Player.objects.filter(team=d1team)
 
-    return render(request, 'school/school.html', {'team': team, 'can_join': can_join, 'can_create': can_create, 'school': school, 'd1team': d1team, 'd1team_roster': d1team_roster, 'd2teams': d2teams})
+    return render(request, 'school/school.html', {'team': team, 'can_join': can_join, 'can_create': can_create, 'school': school, 'd1team': d1team, 'd1team_roster': d1team_roster, 'd2teams': d2})
 
 
 def hub(request):
