@@ -1,10 +1,15 @@
 {% autoescape off %}
-Hi {{ user.profile.nickname }},
+<!DOCTYPE html>
+<html>
+    <p>Hi {{ user.profile.nickname }},</p>
 
-Please click the link below to verify your college credentials.
+<p>Please click the link below to verify your college credentials.</p>
 
-http://{{ domain }}{% url 'verify' uidb64=uid token=token %}
+<a href="http://{{ domain }}{% url 'verify' uidb64=uid token=token %}">Link</a>
 
-Thanks,
-The NACCS Team
+<p>If that link doesn't work, copy and paste this into your browser: http://{{ domain }}{% url 'verify' uidb64=uid token=token %}</p>
+
+<p>Thanks, <br>
+The NACCS Team</p>
+</html>
 {% endautoescape %}
