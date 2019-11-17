@@ -38,8 +38,9 @@
                     {% endif %}
 
                     {% if not player.user == user %}
-                    <input class="btn kick_btn" value="Kick" type="submit">
-                    <input type="hidden" value="{{ player.user.username }}" name="kick">
+                    <!-- <input class="btn kick_btn" value="Kick" type="submit" name="kick {{ player.user.username }}">
+                    <input type="hidden" value="{{ player.user.username }}" name="{{ player.user.username }}"> -->
+                    <input class="btn kick_btn" value="Kick" type="button" disabled>
                     {% else %}
                     <input class="btn kick_btn" value="Kick" type="button" disabled>
                     {% endif %}
