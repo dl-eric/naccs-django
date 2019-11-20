@@ -303,7 +303,7 @@ background-color: #ddd;
 #partners_bg { 
     text-align: center;
     background-color: #ddd;
-    height: 200px;
+    height: 220px;
     color: #999;
     letter-spacing: 1.5px;
     margin-top: 30px;
@@ -311,19 +311,21 @@ background-color: #ddd;
 }
 
 #partners {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 30% auto 30%;
 }
 
 #partners > .partner {
-    height: 80px;
-    margin: 0 30px;
+    height: 100px;
+    justify-self: center;
 }
 
 #partners > .skybox {
+    height: 80px;
+}
+
+#partners > .onwear {
     height: 60px;
-    margin-top: 10px;
 }
 
 #plain_header {
