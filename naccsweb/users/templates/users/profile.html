@@ -15,6 +15,13 @@
         <div id="full_name">{{ player.user.first_name }} {{ player.user.last_name }}</div>
         <div id="school">{{ player.user.profile.college }}</div>
         <div id="division">{{ player.team.division.name }}</div>
+        <div id="contact">
+            <div id="discord">
+                <i class="fab fa-discord"></i> {{ player.user.profile.discord }}
+            </div>
+            <div id="faceit">
+                <img id="faceit_icon" src="{% static 'assets/faceit_pheasant.png' %}"> {{ player.user.profile.faceit }}
+            </div>
     </section>
 </section>
 <div class="content">

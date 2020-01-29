@@ -549,6 +549,19 @@ textarea {
     font-size: 20px;
 }
 
+#player_info #contact #discord {
+    display: inline-block;
+}
+
+#player_info #contact #faceit {
+    margin-left: 20px;
+    display: inline-block;
+}
+
+#player_info #contact #faceit #faceit_icon {
+    height: 18px;
+}
+
 .profile_section {
     display: flex;
     flex-direction: row;
