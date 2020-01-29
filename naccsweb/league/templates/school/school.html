@@ -34,7 +34,7 @@
                 {% for player in d1team_roster %}
                 <article class="player">
                     <div class="player_info">
-                        <div class="role">{{ player.role }}</div>
+                        <div class="role">{% if d1team.captain == player.user %}<i class="fa fa-crown"></i>{% endif %} {{ player.role }}</div>
                         <div class="name">{{ player.user.profile.nickname }}</div>
                         <div class="realname">{{ player.user.first_name }} {{ player.user.last_name }}</div>
                         <a href="/users/{{ player.user.username }}">Read More</a>
@@ -71,7 +71,7 @@
                 <div class="name">{{ team.name }}</div>
                 <ul>
                     {% for player in roster %}
-                    <li><a href="/users/{{ player.user.username }}">{{ player.user.profile.nickname }}</a></li>
+                    <li><a href="/users/{{ player.user.username }}">{% if team.captain == player.user %}<i class="fa fa-crown"></i>{% endif %} {{ player.user.profile.nickname }}</a></li>
                     {% endfor %}
                 </ul>
             </article>
