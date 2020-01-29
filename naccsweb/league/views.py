@@ -99,6 +99,7 @@ def manage_team(request, team_id):
                 to_delete.save()
             except:
                 print("Unable to delete user", name)
+            redirect('manage_team', team_id)
 
     user = User.objects.get(username=request.user)
 

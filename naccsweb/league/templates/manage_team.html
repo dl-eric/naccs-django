@@ -17,6 +17,13 @@
 
         <h1 class="title">Roster</h1>
         <div class="manage_players">
+            {% for player in roster %}
+                {% if not player.user == user %}
+                <form id={{ player.user }} action="" method="post" style="margin: 0;"> 
+                {% csrf_token %}
+                </form>
+                {% endif %}
+            {% endfor %}
             <form action="" method="post">
             {% csrf_token %}
             
@@ -24,7 +31,6 @@
             <div class="player">
                 {{ player.user.profile.nickname }}
                 <div class="player_buttons">
-                    {% csrf_token %}
                     {% if forloop.counter0 < 5 %}
                         {% if player.amount_paid < player.team.division.fee %}
                         <input class="check_box" type="checkbox" name="pay_checkbox" value="{{ player.user.username }}">
@@ -32,15 +38,15 @@
                         {% endif %}
                     {% else %}
                         {% if player.amount_paid < player.team.division.sub_fee %}
-                        <input class="check_box" type="checkbox" name="pay_checkbox" value="{{ player.user.username }}"></player.team.division.sub_fee>
+                        <input class="check_box" type="checkbox" name="pay_checkbox" value="{{ player.user.username }}">
                         Pay
                         {% endif %}
                     {% endif %}
 
                     {% if not player.user == user %}
-                    <!-- <input class="btn kick_btn" value="Kick" type="submit" name="kick {{ player.user.username }}">
-                    <input type="hidden" value="{{ player.user.username }}" name="{{ player.user.username }}"> -->
-                    <input class="btn kick_btn" value="Kick" type="button" disabled>
+                        <!-- <input class="btn kick_btn" value="Kick" type="submit"> -->
+                        <button class="btn kick_btn" name="kick" value={{ player.user }} form={{ player.user }}>Kick</button>
+                        <!-- <input type="hidden" value="{{ player.user.username }}" name="kick"> -->
                     {% else %}
                     <input class="btn kick_btn" value="Kick" type="button" disabled>
                     {% endif %}

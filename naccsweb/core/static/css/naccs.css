@@ -860,6 +860,7 @@ textarea {
     margin: 0 10px;
     width: 80px;
     min-width: auto;
+    border: none;
 }
 
 .kick_btn:disabled, .btn:disabled {
