@@ -18,7 +18,7 @@
         </div>
 
         <div class="jumbo_row_element">
-            <div class="rank">{{ school.rank }}</div>
+            <div class="rank">{% if school.rank == 0 %}Unranked{% else %}{{ school.rank }}{% endif %}</div>
             <h3>D1 RANK</h3>
         </div>
     </section>
